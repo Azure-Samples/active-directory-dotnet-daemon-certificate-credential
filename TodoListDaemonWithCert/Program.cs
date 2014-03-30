@@ -18,7 +18,7 @@ namespace TodoListDaemonWithCert
     {
         //
         // The Client ID is used by the application to uniquely identify itself to Azure AD.
-        // The Cert is the certificate credential used to authenticate this application to Azure AD.
+        // The Cert Name is the subject name of the certificate used to authenticate this application to Azure AD.
         // The Tenant is the name of the Azure AD tenant in which this application is registered.
         // The AAD Instance is the instance of Azure, for example public Azure or Azure China.
         // The Authority is the sign-in URL of the tenant.
@@ -26,7 +26,7 @@ namespace TodoListDaemonWithCert
         const string aadInstance = "https://login.windows.net/{0}";
         const string tenant = "skwantoso.com";
         const string clientId = "82692da5-a86f-44c9-9d53-2f88d52b478b";
-        static X509Certificate2 cert = new X509Certificate2("c:\\temp\\Test3.pfx", "PinkElephant");
+        const string certName = "CN=Test5";
 
         static string authority = String.Format(CultureInfo.InvariantCulture, aadInstance, tenant);
 
@@ -44,12 +44,45 @@ namespace TodoListDaemonWithCert
         static void Main(string[] args)
         {
             //
-            // Call the To Do service 10 times with short delay between calls.
+            // Create the authentication context to be used to acquire tokens.
+            //
+            authContext = new AuthenticationContext(authority);
+
+            //
+            // Initialize the Certificate Credential to be used by ADAL.
+            // First find the matching certificate in the cert store.
             //
 
-            authContext = new AuthenticationContext(authority);
+            X509Certificate2 cert = null;
+            X509Store store = new X509Store(StoreLocation.CurrentUser);
+            try
+            {
+                store.Open(OpenFlags.ReadOnly);
+                // Place all certificates in an X509Certificate2Collection object.
+                X509Certificate2Collection certCollection = store.Certificates;
+                // Find unexpired certificates.
+                X509Certificate2Collection currentCerts = certCollection.Find(X509FindType.FindByTimeValid, DateTime.Now, false);
+                // From the collection of unexpired certificates, find the ones with the correct name.
+                X509Certificate2Collection signingCert = currentCerts.Find(X509FindType.FindBySubjectDistinguishedName, certName, false);
+                if (signingCert.Count == 0)
+                {
+                    // No matching certificate found.
+                    return;
+                }
+                // Return the first certificate in the collection, has the right name and is current.
+                cert = signingCert[0];
+            }
+            finally
+            {
+                store.Close();
+            }
+
+            // Then create the certificate credential.
             certCred = new X509CertificateCredential(clientId, cert);
 
+            //
+            // Call the To Do service 10 times with short delay between calls.
+            //
             for (int i = 0; i < 10; i++)
             {
                 Thread.Sleep(3000);

@@ -10,7 +10,7 @@ For more information about how the protocols work in this scenario and other sce
 To run this sample you will need:
 - Visual Studio 2013
 - The Azure AD module for Powershell
-- The makecert.exe and pvk2pfx.exe utility from the Windows SDK
+- The makecert.exe utility from the Windows SDK
 - An Internet connection
 - An Azure subscription (a free trial is sufficient)
 
@@ -89,17 +89,10 @@ NOTE:  Steps 13 and 14 are not necessary for this sample, but are included in ca
 
 To complete this step you will need the makecert.exe and pvk2pfx.exe utilities, which is included in the Windows SDK.  You may have installed the Windows SDK with Visual Studio 2013, in which case you will find it if you search your computer for makecert.exe.  If not, you can download the SDK [here](http://msdn.microsoft.com/en-US/windows/desktop/aa904949).  You only need to install the Windows Software Development Kit part of the SDK.  You can find more information about the makecert.exe utility [here](http://msdn.microsoft.com/en-us/library/bfsktky3(v=vs.110).aspx).
 
-Run makecert.exe with the following parameters to create a self-signed certificate on your computer.  When you run makecert it will prompt you for a password that is used to protect the file containing the private key.  You will need this password in the next step to create the pfx, and later when you configure your application.
+Run makecert.exe with the following parameters to create a self-signed certificate on your computer:
 
 ```
-makecert -r -pe -n "CN=TodoListDaemonWithCert" -ss My -len 2048 -sv
-TodoListDaemonWithCert.pvk TodoListDaemonWithCert.cer
-```
-
-Then run pvk2pfx.exe to create a .pfx file containing the private key of the certificate:
-
-```
-pvk2pfx.exe /pvk TodoListDaemonWithCert.pvk /pi "<Enter_Password_Here>" /spc TodoListDaemonWithCert.cer /pfx TodoListDaemonWithCert.pfx
+makecert -r -pe -n "CN=TodoListDaemonWithCert" -ss My -len 2048 TodoListDaemonWithCert.cer
 ```
 
 #### Add the certificate as a key for the TodoListDaemonWithCert application in Azure AD
@@ -138,7 +131,7 @@ PS C:\windows\system32> Get-MsolServicePrincipalCredential –ServicePrincipalNa
 1. Open `Program.cs'.
 2. Find the declaration of `tenant` and replace the value with the name of your Azure AD tenant.
 3. Find the declaration of `clientId` and replace the value with the Client ID from the Azure portal.
-4. Find the declaration of `cert` and replace the values with the path to the .pfx file of the cert you created, and the password of the .pfx file.
+4. Find the declaration of `certName` and replace the values with the subject name of the self-signed certificate you created, e.g. "CN=TodoListDaemonWithCert".
 5. Find the declaration of `todoListResourceId` and `todoListBaseAddress` and ensure their values are set properly for your TodoListService project.
 
 ### Step 5:  Trust the IIS Express SSL certificate
