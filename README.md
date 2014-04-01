@@ -3,7 +3,7 @@ Daemon-CertificateCredential-DotNet
 
 This sample is similar to Daemon-DotNet, except instead of the daemon using a password as a credential to authenticate with Azure AD, it uses a certificate.
 
-For more information about how the protocols work in this scenario and other scenarios, see the [Authentication Scenarios for Azure AD](http://msdn.microsoft.com/aad) document.
+For more information about how the protocols work in this scenario and other scenarios, see [Authentication Scenarios for Azure AD](http://go.microsoft.com/fwlink/?LinkId=394414).
 
 ## How To Run This Sample
 
