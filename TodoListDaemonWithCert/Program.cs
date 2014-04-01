@@ -1,9 +1,26 @@
-﻿using System;
+﻿//----------------------------------------------------------------------------------------------
+//    Copyright 2014 Microsoft Corporation
+//
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+//----------------------------------------------------------------------------------------------
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// The following using statements were added for this sample.
 using System.Globalization;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System.Net.Http;
@@ -11,6 +28,7 @@ using System.Threading;
 using System.Net.Http.Headers;
 using System.Web.Script.Serialization;
 using System.Security.Cryptography.X509Certificates;
+using System.Configuration;
 
 namespace TodoListDaemonWithCert
 {
@@ -23,10 +41,10 @@ namespace TodoListDaemonWithCert
         // The AAD Instance is the instance of Azure, for example public Azure or Azure China.
         // The Authority is the sign-in URL of the tenant.
         //
-        const string aadInstance = "https://login.windows.net/{0}";
-        const string tenant = "skwantoso.com";
-        const string clientId = "82692da5-a86f-44c9-9d53-2f88d52b478b";
-        const string certName = "CN=Test5";
+        private static string aadInstance = ConfigurationManager.AppSettings["ida:AADInstance"];
+        private static string tenant = ConfigurationManager.AppSettings["ida:Tenant"];
+        private static string clientId = ConfigurationManager.AppSettings["ida:ClientId"];
+        private static string certName = ConfigurationManager.AppSettings["ida:CertName"];
 
         static string authority = String.Format(CultureInfo.InvariantCulture, aadInstance, tenant);
 
@@ -34,8 +52,8 @@ namespace TodoListDaemonWithCert
         // To authenticate to the To Do list service, the client needs to know the service's App ID URI.
         // To contact the To Do list service we need it's URL as well.
         //
-        const string todoListResourceId = "https://skwantoso.com/TodoListService";
-        const string todoListBaseAddress = "https://localhost:44321";
+        private static string todoListResourceId = ConfigurationManager.AppSettings["todo:TodoListResourceId"];
+        private static string todoListBaseAddress = ConfigurationManager.AppSettings["todo:TodoListBaseAddress"];
 
         private static HttpClient httpClient = new HttpClient();
         private static AuthenticationContext authContext = null;
@@ -221,7 +239,7 @@ namespace TodoListDaemonWithCert
                 int count = 0;
                 foreach (TodoItem item in toDoArray)
                 {
-                    Console.WriteLine("Owner: {0}\nItem:  {1}", item.Owner, item.Title);
+                    Console.WriteLine(item.Title);
                     count++;
                 }
 
