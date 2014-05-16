@@ -113,7 +113,7 @@ PS C:\windows\system32> New-MsolServicePrincipalCredential -AppPrincipalId "<Cli
 You can verify the certificate was successfully added to the application registration by running this command:
 
 ```
-PS C:\windows\system32> Get-MsolServicePrincipalCredential –ServicePrincipalName “http://TodoListDaemonWithCert”
+PS C:\windows\system32> Get-MsolServicePrincipalCredential –ServicePrincipalName “http://TodoListDaemonWithCert” -ReturnKeyValues 0
 ```
 
 ### Step 4:  Configure the sample to use your Azure AD tenant
