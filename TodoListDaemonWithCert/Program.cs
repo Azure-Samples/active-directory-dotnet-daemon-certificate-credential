@@ -29,7 +29,6 @@ using System.Net.Http.Headers;
 using System.Web.Script.Serialization;
 using System.Security.Cryptography.X509Certificates;
 using System.Configuration;
-
 namespace TodoListDaemonWithCert
 {
     class Program
@@ -57,7 +56,7 @@ namespace TodoListDaemonWithCert
 
         private static HttpClient httpClient = new HttpClient();
         private static AuthenticationContext authContext = null;
-        private static X509CertificateCredential certCred = null;
+        private static ClientAssertionCertificate certCred = null;
 
         static void Main(string[] args)
         {
@@ -96,7 +95,7 @@ namespace TodoListDaemonWithCert
             }
 
             // Then create the certificate credential.
-            certCred = new X509CertificateCredential(clientId, cert);
+            certCred = new ClientAssertionCertificate(clientId, cert);
 
             //
             // Call the To Do service 10 times with short delay between calls.
@@ -126,9 +125,9 @@ namespace TodoListDaemonWithCert
                 try
                 {
                     // ADAL includes an in memory cache, so this call will only send a message to the server if the cached token is expired.
-                    result = authContext.AcquireToken(todoListResourceId, certCred);
+                    result = await authContext.AcquireTokenAsync(todoListResourceId, certCred);
                 }
-                catch (ActiveDirectoryAuthenticationException ex)
+                catch (AdalException ex)
                 {
                     if (ex.ErrorCode == "temporarily_unavailable")
                     {
@@ -194,7 +193,7 @@ namespace TodoListDaemonWithCert
                     // ADAL includes an in memory cache, so this call will only send a message to the server if the cached token is expired.
                     result = authContext.AcquireToken(todoListResourceId, certCred);
                 }
-                catch (ActiveDirectoryAuthenticationException ex)
+                catch (AdalException ex)
                 {
                     if (ex.ErrorCode == "temporarily_unavailable")
                     {
