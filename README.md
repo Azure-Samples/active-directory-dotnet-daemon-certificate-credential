@@ -4,7 +4,7 @@ platforms:
 author: azure
 ---
 
-Daemon-CertificateCredential-DotNet
+Authenticating to Azure AD from a daemon app using a certificate
 ===================================
 
 This sample is similar to Daemon-DotNet, except instead of the daemon using a password as a credential to authenticate with Azure AD, it uses a certificate.
