@@ -74,24 +74,35 @@ makecert -r -pe -n "CN=TodoListDaemonWithCert" -ss My -len 2048 TodoListDaemonWi
 
 #### Add the certificate as a key for the TodoListDaemonWithCert application in Azure AD
 
-To associate the certificate credential with the TodoListDaemonWithCert app object in Azure AD, you will need the Azure AD module for Powershell.  You can find instructions on how to download the module [here](http://technet.microsoft.com/en-us/library/jj151815.aspx).
-
-Once you have downloaded and installed the module, open a Powershell command window and execute the following steps:
+While still in powershell, extract a few pieces of information from your certificate.  The following powershell commands will generate a `$base64Value`, a `$base64Thumbprint`, and a `$keyid` that you can use to upload your cert to Azure AD:
 
 ```
-PS C:\windows\system32> connect-msolservice
-PS C:\windows\system32> $cer = New-Object System.Security.Cryptography.X509Certificates.X509Certificate
-PS C:\windows\system32> $cer.Import("<Path to Certificate (.cer) file created in prior step>")
-PS C:\windows\system32> $binCert = $cer.GetRawCertData()
-PS C:\windows\system32> $credValue = [System.Convert]::ToBase64String($binCert);
-PS C:\windows\system32> New-MsolServicePrincipalCredential -AppPrincipalId "<Client ID from prior step>" -Type asymmetric -Value $credValue -StartDate $cer.GetEffectiveDateString() -EndDate $cer.GetExpirationDateString() -Usage verify
+$cer = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
+$cer.Import("TodoListDaemonWithCert.cer")
+$bin = $cer.GetRawCertData()
+$base64Value = [System.Convert]::ToBase64String($bin)
+$bin = $cer.GetCertHash()
+$base64Thumbprint = [System.Convert]::ToBase64String($bin)
+$keyid = [System.Guid]::NewGuid().ToString()
 ```
 
-You can verify the certificate was successfully added to the application registration by running this command:
+To associate the certificate credential with the TodoListDaemonWithCert app object in Azure AD, you will need to make use of the application manifest.  In the Azure Management Portal app registration for the `TodoListDaemonWithCert`, click **Manage Manifest** --> **Download Manifest** in the bottom drawer.
+
+Open the manifest if your favorite text editor, and replace the `keyCredentials` property with your new certificate information from above, using the following schema:
 
 ```
-PS C:\windows\system32> Get-MsolServicePrincipalCredential –ServicePrincipalName “http://TodoListDaemonWithCert” -ReturnKeyValues 0
+"keyCredentials": [
+    {
+        "customKeyIdentifier": "$base64Thumbprint_from_above",
+        "keyId": "$keyid_from_above",
+        "type": "AsymmetricX509Cert",
+        "usage": "Verify",
+        "value":  "$base64Value_from_above"
+    }
+],
 ```
+
+Save the edits to the application manifest, and upload it back into Azure AD by clicking **Manage Manifest** --> **Upload Manifest**.  Note that the `keyCredentials` property is multi-valued, so you may upload multiple certificates for richer key managemnent.
 
 ### Step 4:  Configure the sample to use your Azure AD tenant
 
