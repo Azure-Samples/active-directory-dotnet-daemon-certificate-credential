@@ -65,11 +65,33 @@ namespace TodoListDaemonWithCert
             //
             authContext = new AuthenticationContext(authority);
 
+            // Creating the cert - 'password' was used to generate the cert
+            // http://blogs.msdn.com/b/exchangedev/archive/2015/01/22/building-demon-or-service-apps-with-office-365-mail-calendar-and-contacts-apis-oauth2-client-credential-flow.aspx
+            //makecert - r - pe - n "CN=TodoListDaemonWithCert" - ss My - len 2048 TodoListDaemonWithCert.cer - sv TodoListDaemonPrivateKey.pvk
+            //pvk2pfx - pvk TodoListDaemonPrivateKey.pvk - spc TodoListDaemonWithCert.cer - pfx TodoListDaemonWithCert.pfx - po password
+            //$cer = New - Object System.Security.Cryptography.X509Certificates.X509Certificate2
+            //$cer.Import("TodoListDaemonWithCert.cer")
+            //$bin = $cer.GetRawCertData()
+            //$base64Value = [System.Convert]::ToBase64String($bin)
+            //$bin = $cer.GetCertHash()
+            //$base64Thumbprint = [System.Convert]::ToBase64String($bin)
+            //$keyid = [System.Guid]::NewGuid().ToString()
+
+            // To access cert store Run --> certmgr.msc
+
+            // Uploaded to Manifest using $base64Thumbprint, $keyid, $base64Value
+
             //
             // Initialize the Certificate Credential to be used by ADAL.
             // First find the matching certificate in the cert store.
             //
 
+            // Attempt to load from file directly
+            //var x509Certificate = new X509Certificate2("~/TodoListDaemonWithCert.pfx", "password", X509KeyStorageFlags.Exportable);
+            //byte[] bytes = x509Certificate.Export(X509ContentType.Pkcs12, "password");
+            //certCred = new ClientAssertionCertificate(clientId, bytes, "password");
+
+            // Attempt to load from My cert store
             X509Certificate2 cert = null;
             X509Store store = new X509Store(StoreLocation.CurrentUser);
             try
@@ -95,7 +117,7 @@ namespace TodoListDaemonWithCert
             }
 
             // Then create the certificate credential.
-            certCred = new ClientAssertionCertificate(clientId, cert);
+            certCred = new ClientAssertionCertificate(clientId, cert.Export(X509ContentType.Pkcs12, "password"), "password");
 
             //
             // Call the To Do service 10 times with short delay between calls.
@@ -124,11 +146,12 @@ namespace TodoListDaemonWithCert
                 retry = false;
                 try
                 {   // ADAL includes an in memory cache, so this call will only send a message to the server if the cached token is expired.
-                    result = authContext.AcquireToken(todoListResourceId, certCred);
+                    result = await authContext.AcquireTokenAsync(todoListResourceId, certCred);
                 }
-                catch (AdalException ex)
+                catch (Exception ex)
                 {
-                    if (ex.ErrorCode == "temporarily_unavailable")
+                    AdalException exc = ex as AdalException;
+                    if (exc.ErrorCode == "temporarily_unavailable")
                     {
                         retry = true;
                         retryCount++;
@@ -190,7 +213,7 @@ namespace TodoListDaemonWithCert
                 try
                 {
                     // ADAL includes an in memory cache, so this call will only send a message to the server if the cached token is expired.
-                    result = authContext.AcquireToken(todoListResourceId, certCred);
+                    result = await authContext.AcquireTokenAsync(todoListResourceId, certCred);
                 }
                 catch (AdalException ex)
                 {
