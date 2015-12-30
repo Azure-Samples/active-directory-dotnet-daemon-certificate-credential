@@ -43,7 +43,8 @@ namespace TodoListDaemonWithCert
         private static string aadInstance = ConfigurationManager.AppSettings["ida:AADInstance"];
         private static string tenant = ConfigurationManager.AppSettings["ida:Tenant"];
         private static string clientId = ConfigurationManager.AppSettings["ida:ClientId"];
-        private static string certName = ConfigurationManager.AppSettings["ida:CertName"];
+        private static string certPath = ConfigurationManager.AppSettings["ida:CertPath"];
+        private static string certPassword = ConfigurationManager.AppSettings["ida:CertPassword"];
 
         static string authority = String.Format(CultureInfo.InvariantCulture, aadInstance, tenant);
 
@@ -60,68 +61,15 @@ namespace TodoListDaemonWithCert
 
         static void Main(string[] args)
         {
-            //
             // Create the authentication context to be used to acquire tokens.
-            //
             authContext = new AuthenticationContext(authority);
 
-            // Creating the cert - 'password' was used to generate the cert
-            // http://blogs.msdn.com/b/exchangedev/archive/2015/01/22/building-demon-or-service-apps-with-office-365-mail-calendar-and-contacts-apis-oauth2-client-credential-flow.aspx
-            //makecert - r - pe - n "CN=TodoListDaemonWithCert" - ss My - len 2048 TodoListDaemonWithCert.cer - sv TodoListDaemonPrivateKey.pvk
-            //pvk2pfx - pvk TodoListDaemonPrivateKey.pvk - spc TodoListDaemonWithCert.cer - pfx TodoListDaemonWithCert.pfx - po password
-            //$cer = New - Object System.Security.Cryptography.X509Certificates.X509Certificate2
-            //$cer.Import("TodoListDaemonWithCert.cer")
-            //$bin = $cer.GetRawCertData()
-            //$base64Value = [System.Convert]::ToBase64String($bin)
-            //$bin = $cer.GetCertHash()
-            //$base64Thumbprint = [System.Convert]::ToBase64String($bin)
-            //$keyid = [System.Guid]::NewGuid().ToString()
-
-            // To access cert store Run --> certmgr.msc
-
-            // Uploaded to Manifest using $base64Thumbprint, $keyid, $base64Value
-
-            //
             // Initialize the Certificate Credential to be used by ADAL.
-            // First find the matching certificate in the cert store.
-            //
+            var x509certificate = new X509Certificate2(certPath, certPassword, X509KeyStorageFlags.Exportable);
+            byte[] bytes = x509certificate.Export(X509ContentType.Pkcs12, certPassword);
+            certCred = new ClientAssertionCertificate(clientId, bytes, certPassword);
 
-            // Attempt to load from file directly
-            //var x509Certificate = new X509Certificate2("~/TodoListDaemonWithCert.pfx", "password", X509KeyStorageFlags.Exportable);
-            //byte[] bytes = x509Certificate.Export(X509ContentType.Pkcs12, "password");
-            //certCred = new ClientAssertionCertificate(clientId, bytes, "password");
-
-            // Attempt to load from My cert store
-            X509Certificate2 cert = null;
-            X509Store store = new X509Store(StoreLocation.CurrentUser);
-            try
-            {
-                store.Open(OpenFlags.ReadOnly);
-                // Place all certificates in an X509Certificate2Collection object.
-                X509Certificate2Collection certCollection = store.Certificates;
-                // Find unexpired certificates.
-                X509Certificate2Collection currentCerts = certCollection.Find(X509FindType.FindByTimeValid, DateTime.Now, false);
-                // From the collection of unexpired certificates, find the ones with the correct name.
-                X509Certificate2Collection signingCert = currentCerts.Find(X509FindType.FindBySubjectDistinguishedName, certName, false);
-                if (signingCert.Count == 0)
-                {
-                    // No matching certificate found.
-                    return;
-                }
-                // Return the first certificate in the collection, has the right name and is current.
-                cert = signingCert[0];
-            }
-            finally
-            {
-                store.Close();
-            }
-
-            // Then create the certificate credential.
-            certCred = new ClientAssertionCertificate(clientId, cert.Export(X509ContentType.Pkcs12, "password"), "password");
-
-            //
             // Call the To Do service 10 times with short delay between calls.
-            //
             for (int i = 0; i < 10; i++)
             {
                 Thread.Sleep(3000);
@@ -133,10 +81,9 @@ namespace TodoListDaemonWithCert
 
         static async Task PostTodo()
         {
-            //
             // Get an access token from Azure AD using client credentials.
             // If the attempt to get a token fails because the server is unavailable, retry twice after 3 seconds each.
-            //
+
             AuthenticationResult result = null;
             int retryCount = 0;
             bool retry = false;
