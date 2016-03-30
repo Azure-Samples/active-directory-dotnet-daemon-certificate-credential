@@ -43,8 +43,7 @@ namespace TodoListDaemonWithCert
         private static string aadInstance = ConfigurationManager.AppSettings["ida:AADInstance"];
         private static string tenant = ConfigurationManager.AppSettings["ida:Tenant"];
         private static string clientId = ConfigurationManager.AppSettings["ida:ClientId"];
-        private static string certPath = ConfigurationManager.AppSettings["ida:CertPath"];
-        private static string certPassword = ConfigurationManager.AppSettings["ida:CertPassword"];
+        private static string certName = ConfigurationManager.AppSettings["ida:CertName"];
 
         static string authority = String.Format(CultureInfo.InvariantCulture, aadInstance, tenant);
 
@@ -65,9 +64,32 @@ namespace TodoListDaemonWithCert
             authContext = new AuthenticationContext(authority);
 
             // Initialize the Certificate Credential to be used by ADAL.
-            var x509certificate = new X509Certificate2(certPath, certPassword, X509KeyStorageFlags.Exportable);
-            byte[] bytes = x509certificate.Export(X509ContentType.Pkcs12, certPassword);
-            certCred = new ClientAssertionCertificate(clientId, bytes, certPassword);
+            X509Certificate2 cert = null;
+            X509Store store = new X509Store(StoreLocation.CurrentUser);
+            try
+            {
+                store.Open(OpenFlags.ReadOnly);
+                // Place all certificates in an X509Certificate2Collection object.
+                X509Certificate2Collection certCollection = store.Certificates;
+                // Find unexpired certificates.
+                X509Certificate2Collection currentCerts = certCollection.Find(X509FindType.FindByTimeValid, DateTime.Now, false);
+                // From the collection of unexpired certificates, find the ones with the correct name.
+                X509Certificate2Collection signingCert = currentCerts.Find(X509FindType.FindBySubjectDistinguishedName, certName, false);
+                if (signingCert.Count == 0)
+                {
+                    // No matching certificate found.
+                    return;
+                }
+                // Return the first certificate in the collection, has the right name and is current.
+                cert = signingCert[1];
+            }
+            finally
+            {
+                store.Close();
+            }
+
+            // Then create the certificate credential.
+            certCred = new ClientAssertionCertificate(clientId, cert);
 
             // Call the To Do service 10 times with short delay between calls.
             for (int i = 0; i < 10; i++)

@@ -111,20 +111,10 @@ Save the edits to the application manifest, and upload it back into Azure AD by 
 
 #### Configure the TodoListDaemon project
 
-To use the certificate in the Visual Studio project, you must first create a `.pfx` file.  Use the `pvk2pfx` tool as follows, providing the same password as above when prompted:
-
-```
-pvk2pfx -pvk TodoListDaemonPrivateKey.pvk -spc TodoListDaemonWithCert.cer -pfx TodoListDaemonWithCert.pfx -po password
-```
-
-Copy the newly created `.pfx` file to the project's `TodoListDaemonWithCert` directory, and add the file to the `TodoListDaemonWithCert` project in Visual Studio by right clicking on the project and selecting **Add Existing Item**.  You should now see the `TodoListDaemonWithCert.pfx` file in the solution explorer.
-
-Now open `app.config' and perform the following steps:
-
+1. Open `app.config'.
 2. Find the app key `ida:Tenant` and replace the value with your AAD tenant name.
 3. Find the app key `ida:ClientId` and replace the value with the Client ID for the TodoListDaemonWithCert app registration from the Azure portal.
-4. Ensure the `ida:CertPath` value points to the location of your `.pfx` file.  If you followed the instructions above, the default value of `../../TodoListDaemonWithCert.pfx` should be correct.
-4. Find the app key `ida:CertPassword` and replace the value with the password you used to create the certificate.
+4. Find the app key `ida:CertName` and replace the value with the subject name of the self-signed certificate you created, e.g. "CN=TodoListDaemonWithCert".
 5. Find the app key `todo:TodoListResourceId` and replace the value with the  App ID URI of the TodoListService, for example `https://<your_tenant_name>/TodoListService`
 6. Find the app key `todo:TodoListBaseAddress` and replace the value with the base address of the TodoListService project.
 
