@@ -174,7 +174,7 @@ Coming soon.
 
 ## About The Code
 
-Coming soon.
+If you've looked at the code in this sample and are wondering how authorization works, you're not alone.  See [this Stack Overflow question](https://stackoverflow.com/questions/34415348/azure-active-directory-daemon-client-using-certificates/).  The TodoList Service in this solution simply validates that the client was able to authenticate against the tenant that the service is configured to work with.  Effectively, any application in that tenant will be able to use the service.
 
 ## How To Recreate This Sample
 
