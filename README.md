@@ -39,30 +39,26 @@ There are two projects in this sample.  Each needs to be separately registered i
 
 #### Register the TodoListService web API
 
-1. Sign in to the [Azure management portal](https://manage.windowsazure.com).
-2. Click on Active Directory in the left hand nav.
-3. Click the directory tenant where you wish to register the sample application.
-4. Click the Applications tab.
-5. In the drawer, click Add.
-6. Click "Add an application my organization is developing".
-7. Enter a friendly name for the application, for example "TodoListService", select "Web Application and/or Web API", and click next.
-8. For the sign-on URL, enter the base URL for the sample, which is by default `https://localhost:44321`.
-9. For the App ID URI, enter `https://<your_tenant_name>/TodoListService`, replacing `<your_tenant_name>` with the name of your Azure AD tenant.  Click OK to complete the registration.
-10. While still in the Azure portal, click the Configure tab of your application.
-11. Find the Client ID value and copy it aside, you will need this later when configuring your application.
+1.Sign in to the[Azure portal](https://portal.azure.com).
+2.On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
+2.Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
+3.Click on **Registered Applications** and choose **Add**.
+4.Enter a friendly name for the application, for example 'TodoListService' and select 'Web Application and/or Web API' as the Application Type. For the sign-on URL, enter the base URL for the sample, which is by default `https://localhost:44321`. Click on **Create** to create the application.
+5.While still in the Azure portal, choose your application, click on **Settings** and choose **Properties**.
+6.Find the Application ID value and copy it to the clipboard.
 
 #### Register the TodoListDaemonWithCert app
 
-1. Sign in to the [Azure management portal](https://manage.windowsazure.com).
-2. Click on Active Directory in the left hand nav.
-3. Click the directory tenant where you wish to register the sample application.
-4. Click the Applications tab.
-5. In the drawer, click Add.
-6. Click "Add an application my organization is developing".
-7. Enter a friendly name for the application, for example "TodoListDaemonWithCert", select "Web Application and/or Web API", and click next.
-8. Since this application is a daemon and not a web application, it doesn't have a sign-in URL or app ID URI.  For these two fields, enter "http://TodoListDaemonWithCert".
-9. While still in the Azure portal, click the Configure tab of your application.
-10. Find the Client ID value and copy it aside, you will need this later when configuring your application.
+
+1.Sign in to the[Azure portal](https://portal.azure.com).
+2.On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
+2.Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
+3.Click on **Registered Applications** and choose **Add**.
+4.Enter a friendly name for the application, for example 'TodoListDaemonWithCert' and select 'Web Application and/or Web API' as the Application Type. 
+5.Since this application is a daemon and not a web application, it doesn't have a sign-in URL or app ID URI.  For these two fields, enter "http://TodoListDaemonWithCert". Click on **Create** to create the application.
+6.While still in the Azure portal, choose your application, click on **Settings** and choose **Properties**.
+7.Find the Application ID value and copy it to the clipboard.
+
 
 #### Create a self-signed certificate
 
