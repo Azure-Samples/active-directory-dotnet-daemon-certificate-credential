@@ -39,7 +39,7 @@ There are two projects in this sample.  Each needs to be separately registered i
 
 #### Register the TodoListService web API
 
-1.Sign in to the[Azure portal](https://portal.azure.com).
+1.Sign in to the [Azure portal](https://portal.azure.com).
 2.On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
 2.Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
 3.Click on **Registered Applications** and choose **Add**.
@@ -50,7 +50,7 @@ There are two projects in this sample.  Each needs to be separately registered i
 #### Register the TodoListDaemonWithCert app
 
 
-1.Sign in to the[Azure portal](https://portal.azure.com).
+1.Sign in to the [Azure portal](https://portal.azure.com).
 2.On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
 2.Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
 3.Click on **Registered Applications** and choose **Add**.
