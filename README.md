@@ -16,11 +16,9 @@ For more information about how the protocols work in this scenario and other sce
 
 To run this sample you will need:
 - Visual Studio 2013
-- The Azure AD module for Powershell
 - The makecert.exe utility from the Windows SDK
 - An Internet connection
 - An Azure Active Directory (Azure AD) tenant. For more information on how to get an Azure AD tenant, please see [How to get an Azure AD tenant](https://azure.microsoft.com/en-us/documentation/articles/active-directory-howto-tenant/) 
-- A user account in your Azure AD tenant. This sample will not work with a Microsoft account, so if you signed in to the Azure portal with a Microsoft account and have never created a user account in your directory before, you need to do that now.
 
 ### Step 1:  Clone or download this repository
 
@@ -34,35 +32,35 @@ There are two projects in this sample.  Each needs to be separately registered i
 
 #### Register the TodoListService web API
 
-1.Sign in to the [Azure portal](https://portal.azure.com).
-2.On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
-2.Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
-3.Click on **App registrations** and choose **Add**.
-4.Enter a friendly name for the application, for example 'TodoListService' and select 'Web Application and/or Web API' as the Application Type. For the sign-on URL, enter the base URL for the sample, which is by default `https://localhost:44321`. For the App ID URI, enter `https://<your_tenant_name>/TodoListService`, replacing `<your_tenant_name>` with the name of your Azure AD tenant. Click on **Create** to create the application.
-5.While still in the Azure portal, choose your application, click on **Settings** and choose **Properties**.
-6.Find the Application ID value and copy it to the clipboard.
+1. Sign in to the [Azure portal](https://portal.azure.com).
+2. On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
+2. Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
+3. Click on **App registrations** and choose **Add**.
+4. Enter a friendly name for the application, for example 'TodoListService' and select 'Web Application and/or Web API' as the Application Type. For the sign-on URL, enter the base URL for the sample, which is by default `https://localhost:44321`. For the App ID URI, enter `https://<your_tenant_name>/TodoListService`, replacing `<your_tenant_name>` with the name of your Azure AD tenant. Click on **Create** to create the application.
+5. While still in the Azure portal, choose your application, click on **Settings** and choose **Properties**.
+6. Find the Application ID value and copy it to the clipboard.
 
 #### Register the TodoListDaemonWithCert app
 
 
-1.Sign in to the [Azure portal](https://portal.azure.com).
-2.On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
-2.Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
-3.Click on **App registrations** and choose **Add**.
-4.Enter a friendly name for the application, for example 'TodoListDaemonWithCert' and select 'Web Application and/or Web API' as the Application Type. 
-5.Since this application is a daemon and not a web application, it doesn't have a sign-in URL or app ID URI.  For these two fields, enter "http://TodoListDaemonWithCert". Click on **Create** to create the application.
-6.While still in the Azure portal, choose your application, click on **Settings** and choose **Properties**.
-7.Find the Application ID value and copy it to the clipboard.
+1. Sign in to the [Azure portal](https://portal.azure.com).
+2. On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
+2. Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
+3. Click on **App registrations** and choose **Add**.
+4. Enter a friendly name for the application, for example 'TodoListDaemonWithCert' and select *'Web Application and/or Web API'* as the Application Type (even if here we have a console application). 
+5. Since this application is a daemon and not a web application, it doesn't have a sign-in URL or app ID URI.  For these two fields, enter "http://TodoListDaemonWithCert". Click on **Create** to create the application.
+6. While still in the Azure portal, choose your application, click on **Settings** and choose **Properties**.
+7. Find the Application ID value and copy it to the clipboard.
 
 
 #### Create a self-signed certificate
 
-To complete this step you will need the makecert.exe and pvk2pfx.exe utilities, which is included in the Windows SDK.  You may have installed the Windows SDK with Visual Studio 2013, in which case you will find it if you search your computer for makecert.exe.  If not, you can download the SDK [here](http://msdn.microsoft.com/en-US/windows/desktop/aa904949).  You only need to install the Windows Software Development Kit part of the SDK.  You can find more information about the makecert.exe utility [here](http://msdn.microsoft.com/en-us/library/bfsktky3(v=vs.110).aspx).
+To complete this step you will need the makecert.exe and, which is included in the Windows SDK.  You may have installed the Windows SDK with Visual Studio, in which case you will find it if you search your computer for makecert.exe.  If not, you can download the SDK [here](http://msdn.microsoft.com/en-US/windows/desktop/aa904949).  You only need to install the Windows Software Development Kit part of the SDK.  You can find more information about the makecert.exe utility [here](http://msdn.microsoft.com/en-us/library/bfsktky3(v=vs.110).aspx).
 
 Run makecert.exe with the following parameters to create a self-signed certificate on your computer:
 
 ```
-makecert -r -pe -n "CN=TodoListDaemonWithCert" -ss My -len 2048 TodoListDaemonWithCert.cer -sv TodoListDaemonPrivateKey.pvk
+makecert -r -pe -n "CN=TodoListDaemonWithCert" -ss My -len 2048 TodoListDaemonWithCert.cer
 ```
 
 When prompted, create a password for the certificate and remember it for later.  
@@ -119,7 +117,7 @@ Save the edits to the application manifest, and upload it back into Azure AD by 
 4. Find the app key `ida:Audience` and replace the value with the App ID URI you registered earlier, for example `https://<your_tenant_name>/TodoListService`.
 5. Find the app key `ida:ClientId` and replace the value with the Client ID for the TodoListService from the Azure portal.
 
-### Step 5:  Trust the IIS Express SSL certificate
+### Step 4:  Trust the IIS Express SSL certificate
 
 Since the web API is SSL protected, the client of the API (the web app) will refuse the SSL connection to the web API unless it trusts the API's SSL certificate.  Use the following steps in Windows Powershell to trust the IIS Express SSL certificate.  You only need to do this once.  If you fail to do this step, calls to the TodoListService will always throw an unhandled exception where the inner exception message is:
 
@@ -155,7 +153,7 @@ You can verify the certificate is in the Trusted Root store by running this comm
 
 `PS C:\windows\system32> dir Cert:\LocalMachine\Root`
 
-### Step 4:  Run the sample
+### Step 5:  Run the sample
 
 Clean the solution, rebuild the solution, and run it.  You might want to go into the solution properties and set both projects as startup projects, with the service project starting first.
 
