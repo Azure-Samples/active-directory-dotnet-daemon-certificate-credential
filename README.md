@@ -55,7 +55,7 @@ There are two projects in this sample.  Each needs to be separately registered i
 
 #### Create a self-signed certificate
 
-To complete this step you will need the makecert.exe and, which is included in the Windows SDK.  You may have installed the Windows SDK with Visual Studio, in which case you will find it if you search your computer for makecert.exe.  If not, you can download the SDK [here](http://msdn.microsoft.com/en-US/windows/desktop/aa904949).  You only need to install the Windows Software Development Kit part of the SDK.  You can find more information about the makecert.exe utility [here](http://msdn.microsoft.com/en-us/library/bfsktky3(v=vs.110).aspx).
+To complete this step you will need the makecert.exe, which is included in the Windows SDK. You may have installed the Windows SDK with Visual Studio, in which case you will find it if you search your computer for makecert.exe.  If not, you can download the SDK [here](http://msdn.microsoft.com/en-US/windows/desktop/aa904949).  You only need to install the Windows Software Development Kit part of the SDK.  You can find more information about the makecert.exe utility [here](http://msdn.microsoft.com/en-us/library/bfsktky3(v=vs.110).aspx).
 
 Run makecert.exe with the following parameters to create a self-signed certificate on your computer:
 
