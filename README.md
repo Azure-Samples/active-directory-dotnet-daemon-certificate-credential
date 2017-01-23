@@ -16,7 +16,6 @@ For more information about how the protocols work in this scenario and other sce
 
 To run this sample, you will need:
 - Visual Studio 2013 or above
-- PowerShell (normally included with Windows)
 - An Internet connection
 - An Azure Active Directory (Azure AD) tenant. For more information on how to get an Azure AD tenant, please see [How to get an Azure AD tenant](https://azure.microsoft.com/en-us/documentation/articles/active-directory-howto-tenant/) 
 
