@@ -98,9 +98,10 @@ click on **Manifest**. A blade opens enabling you to edit the manifest.
 You need to replace the value of the `keyCredentials` property (that is `[]` if you don't have any certificate credentials yet), with the content of the keyCredential.txt file 
 
 To do this replacement in the manifest, you have two options:
-1. Option 1: Edit the manifest in place by clicking **Edit**, replacing the keyCredentials value, and then clicking **Save**. 
+- Option 1: Edit the manifest in place by clicking **Edit**, replacing the keyCredentials value, and then clicking **Save**. 
 Note that if you refresh the web page, the key is displayed with different properties than what you have input. In particular, you can now see the endDate, and stateDate, and the vlaue is shown as null. This is normal. 
-2. Option 2: **Download** the manifest to your computer, edit it with your favorite text editor, save a copy of it, and **Upload** this copy. You might want to choose this option if you want to keep track of the history of the manifest.
+
+- Option 2: **Download** the manifest to your computer, edit it with your favorite text editor, save a copy of it, and **Upload** this copy. You might want to choose this option if you want to keep track of the history of the manifest.
 
 Note that the `keyCredentials` property is multi-valued, so you may upload multiple certificates for richer key management. In that case copy only the text between the curly brackets.
 
