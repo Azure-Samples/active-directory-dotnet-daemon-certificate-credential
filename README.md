@@ -5,6 +5,7 @@ author: dstrockis
 ---
 
 # Authenticating to Azure AD in daemon apps with certificates
+![](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/30/badge)
 
 This sample is similar to [Daemon-DotNet](https://github.com/Azure-Samples/active-directory-dotnet-daemon), except instead of the daemon using a password as a credential to authenticate with Azure AD, it uses a certificate.
 
