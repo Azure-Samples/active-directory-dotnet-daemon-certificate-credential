@@ -81,7 +81,7 @@ namespace TodoListDaemonWithCert
                     return;
                 }
                 // Return the first certificate in the collection, has the right name and is current.
-                cert = signingCert[0];
+                cert = signingCert.OfType< X509Certificate2>().OrderByDescending(c => c.NotBefore).First();
             }
             finally
             {
