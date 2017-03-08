@@ -6,7 +6,7 @@ author: dstrockis,jmprieur
 
 # Authenticating to Azure AD in daemon apps with certificates - manual configuration steps
 This page explains how to register the sample with your Azure Active Directory and how to configure the code to use your Azure AD tenant.
-Alternatively the [Readme.md](./Readme.md) presents how to use a PowerShell script to  do the same thing automatically
+Alternatively the [Readme.md](./README.md) presents how to use a PowerShell script to  do the same thing automatically
 
 ### Step 1:  Register the sample with your Azure Active Directory tenant
 
