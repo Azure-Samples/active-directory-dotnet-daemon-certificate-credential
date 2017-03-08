@@ -19,7 +19,7 @@
 #
 # To cleanup
 # 6) Optionnaly if you want to cleanup the applications in the Azure AD, run:
-#      cleanup($apps)
+#      Cleanup $apps
 #    The applications are un-registered
 
 $ErrorActionPreference = 'Stop'
@@ -144,7 +144,7 @@ of the visual studio solution (App.Config and Web.Config) so that they are consi
 
 
 # Remove the AAD applications and service principals registered for the sample.
-Function CleanUp($applicationsInformation)
+Function Cleanup($applicationsInformation)
 {
     remove-azurermadserviceprincipal -objectid $applicationsInformation.serviceAppServicePrincipal.id
     remove-azurermadapplication -objectid $applicationsInformation.serviceApp.objectid
