@@ -143,7 +143,7 @@ of the visual studio solution (App.Config and Web.Config) so that they are consi
 }
 
 
-#Clean-Ups the applications and serice principal in Azure AD.
+# Remove the AAD applications and service principals registered for the sample.
 Function CleanUp($applicationsInformation)
 {
     remove-azurermadserviceprincipal -objectid $applicationsInformation.serviceAppServicePrincipal.id
