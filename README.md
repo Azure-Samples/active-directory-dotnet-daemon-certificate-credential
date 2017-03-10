@@ -145,3 +145,7 @@ First, in Visual Studio 2013 (or above) create an empty solution to host the  pr
 6. In `app.config` create keys for `ida:AADInstance`, `ida:Tenant`, `ida:ClientId`, `ida:CertName`, `todo:TodoListResourceId`, and `todo:TodoListBaseAddress` and set them accordingly.  For the public Azure cloud, the value of `ida:AADInstance` is `https://login.microsoftonline.com/{0}`.
 
 Finally, in the properties of the solution itself, set both projects as startup projects.
+
+
+## FAQ
+- [How to use a pre-existing certificate](https://github.com/Azure-Samples/active-directory-dotnet-daemon-certificate-credential/issues/29) instead of generating a self signed certificate.
