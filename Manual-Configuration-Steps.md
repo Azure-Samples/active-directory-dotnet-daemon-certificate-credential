@@ -50,7 +50,7 @@ store such as the Computer or service store (See [How to: View Certificates with
 
 #### Add the certificate as a key for the TodoListDaemonWithCert application in Azure AD
 ##### Generate a textual file containing the certificate credentials in a form consumable by AzureAD
-Copy and paste the following lines in the sam PowerShell window. They generate a text file in the current folder containing information that you can use to upload your certificate to Azure AD:
+Copy and paste the following lines in the same PowerShell window. They generate a text file in the current folder containing information that you can use to upload your certificate to Azure AD:
 
 ```
 $bin = $cert.RawData
