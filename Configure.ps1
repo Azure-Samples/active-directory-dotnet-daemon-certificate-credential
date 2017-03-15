@@ -23,7 +23,7 @@
 # 6) Optionnaly if you want to cleanup the applications in the Azure AD, run:
 #      CleanUp $apps
 #    The applications are un-registered
-param([PSCredential]$Credential, [string]$TenantId)
+param([PSCredential]$Credential="", [string]$TenantId="")
 Import-Module AzureAD
 $ErrorActionPreference = 'Stop'
 
@@ -75,8 +75,8 @@ so that they are consistent with the Applications parameters
 #>
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory=$True, HelpMessage='Tenant ID (This is a GUID which represents the "Directory ID" of the AzureAD tenant into which you want to create the apps')]
         [PSCredential] $Credential,
+        [Parameter(HelpMessage='Tenant ID (This is a GUID which represents the "Directory ID" of the AzureAD tenant into which you want to create the apps')]
         [string] $tenantId
     )
 
@@ -110,16 +110,7 @@ so that they are consistent with the Applications parameters
     $tenant = Get-AzureADTenantDetail
     $tenantName =  $tenant.VerifiedDomains[0].Name
 
-    # Variables for the registration of the AAD application for the Web API Service
-    $serviceAadAppName = "TodoListService"
-    $serviceHomePage = "https://localhost:44321"
-    $serviceAppIdURI = "https://$tenantName/$serviceAadAppName"
-
-    # Variables for the registration of the AAD application for the Daemon app
-    $daemonAadAppName = "TodoListDaemonWithCert"
-    $daemonHomePage = "http://TodoListDaemonWithCert"
-    $daemonAppIdURI = "http://TodoListDaemonWithCert"
-    $certificateName = "CN=TodoListDaemonWithCert"
+    . .\Parameters.ps1
 
     # Create the Azure Active Directory Application and it's service principal
     Write-Host "Creating the service appplication ($serviceAadAppName)"
@@ -170,25 +161,13 @@ so that they are consistent with the Applications parameters
                             -tenantId $tenantId `
                             -audience $serviceAppIdURI
 
-    # prepare the clean-up
-    $applicationsInformation = @{serviceApp=$serviceApplication; serviceAppServicePrincipal=$serviceservicePrincipal; clientApp=$daemonApplication; clientAppServicePrincipal=$daemonservicePrincipal; certificateThumbPrint=$certBase64Thumbprint}
-    return $applicationsInformation
+    # Completes
+    Write-Host "Done."
    }
 }
 
-
-# Remove the AAD applications and service principals registered for the sample.
-Function CleanUp($applicationsInformation)
-{
-    Remove-AzureADServicePrincipal -ObjectId $applicationsInformation.serviceAppServicePrincipal.ObjectId
-    Remove-AzureADApplication -ObjectId $applicationsInformation.serviceApp.ObjectId
-    Remove-AzureADServicePrincipal -ObjectId $applicationsInformation.clientAppServicePrincipal.ObjectId
-    Remove-AzureADApplication -ObjectId $applicationsInformation.clientApp.ObjectId
-}
-
-
 # Run interactively (will ask you for the tenant ID)
-$apps = ConfigureApplications -Credential $Credential -tenantId $TenantId
+ConfigureApplications -Credential $Credential -tenantId $TenantId
 
 # you can also provide the tenant ID and the credentials
 # $tenantId = "ID of your AAD directory"
@@ -197,4 +176,4 @@ $apps = ConfigureApplications -Credential $Credential -tenantId $TenantId
 
 # When you have built your Visual Studio solution and ran the code, if you want to clean up the Azure AD applications, just 
 # run the following command in the same PowerShell window as you ran ConfigureApplications
-# CleanUp($apps)
+# . .\CleanUp -Credentials $Credentials

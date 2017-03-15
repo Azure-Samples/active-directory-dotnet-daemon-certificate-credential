@@ -3,8 +3,8 @@ services: active-directory
 platforms: dotnet
 author: dstrockis,jmprieur
 ---
-
 # Authenticating to Azure AD in daemon apps with certificates
+
 ![](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/30/badge)
 
 In this sample a Windows console application (TodoListDaemonWithCert) calls a web API (TodoListService) using its app identity. This scenario is useful for situations where headless or unattended job or process needs to run as an application identity, instead of as a user's identity. The application uses the Active Directory Authentication Library (ADAL) to get a token from Azure AD using the OAuth 2.0 client credential flow, where the client credential is a certificate.
@@ -39,6 +39,7 @@ There are two options:
 If you want to understand in more depth what needs to be done in the Azure portal, and how to change the code (Option 2), please have a look at [Manual-Configuration-Steps.md](./Manual-Configuration-Steps.md). Otherwise (Option 1), the steps to use the PowerShell are the following:
 
 #### Find your tenant ID
+I might be that the user you want to create Azure Active Directory applications with can do it in several active directories. In that case to disambiguate in which active directory to create the applications, you will need to provide its tenant ID. Here is how to get it:
  1. Sign in to the [Azure portal](https://portal.azure.com).
  2. On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
  3. Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
@@ -54,7 +55,9 @@ If you want to understand in more depth what needs to be done in the Azure porta
         
     The script executes and provisions the AAD applications (If you look at the AAD applications in the portal after that the script has run, you'll have two additional applications). The script also updates two configuration files in the Visual Studio solution (`TodoListDaemonWithCert\App.Config` and `TodoListService\Web.Config`)
 
-6. If you intend to clean up the azure AD applications from the Azure AD tenant after running the sample, keep the PowerShell ISE window opened.
+ 6. If you intend to clean up the azure AD applications from the Azure AD tenant after running the sample see Step 5 below.
+
+Note that if you are familiar with PowerShell it's also possible to start a PowerShell command window, and run ``. .\Configure.ps1`` providing your credentials directly (and the tenant ID if there is ambiguity).
 
 ### Step 3:  Trust the IIS Express SSL certificate
 
@@ -107,11 +110,12 @@ Clean the solution, rebuild the solution, and run it.  You might want to go into
 
 The daemon will add items to its To Do list and then read them back.
 
-### Step 4:  Clean up the applications in the Azure AD tenant
-When you are done with running and understanding the sample, if you want to remove your Applications from AD and if you have keep your PowerShell ISE window opened, just run, in the same PowerShell ISE window:
+### Step 5:  Clean up the applications in the Azure AD tenant
+When you are done with running and understanding the sample, if you want to remove your Applications from AD just run:
 
-``CleanUp($apps)``
+``. .\Cleanup.ps1``
 
+Again you will be asked for your tenant ID.
 If you do that you also probably want to undo the changes in the `App.config` and `Web.Config`
 
 
