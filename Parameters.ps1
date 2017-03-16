@@ -5,6 +5,6 @@
 
     # Variables for the registration of the AAD application for the Daemon app
     $daemonAadAppName = "TodoListDaemonWithCert"
-    $daemonHomePage = "https://TodoListDaemonWithCert"
-    $daemonAppIdURI = "https://TodoListDaemonWithCert"
+    $daemonHomePage = "https://$daemonAadAppName"
+    $daemonAppIdURI = "https://$daemonAadAppName"
     $certificateName = "CN=TodoListDaemonWithCert"
