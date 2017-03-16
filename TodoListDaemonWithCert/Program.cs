@@ -58,8 +58,13 @@ namespace TodoListDaemonWithCert
         private static AuthenticationContext authContext = null;
         private static ClientAssertionCertificate certCred = null;
 
-        static void Main(string[] args)
+        private static int errorCode;
+
+        static int Main(string[] args)
         {
+            // Return code so that exceptions provoke a non null return code for the daemon
+            errorCode = 0;
+
             // Create the authentication context to be used to acquire tokens.
             authContext = new AuthenticationContext(authority);
 
@@ -78,7 +83,7 @@ namespace TodoListDaemonWithCert
                 if (signingCert.Count == 0)
                 {
                     // No matching certificate found.
-                    return;
+                    return -1;
                 }
                 // Return the first certificate in the collection, has the right name and is current.
                 cert = signingCert.OfType< X509Certificate2>().OrderByDescending(c => c.NotBefore).First();
@@ -99,6 +104,8 @@ namespace TodoListDaemonWithCert
                 Thread.Sleep(3000);
                 GetTodo().Wait();
             }
+
+            return errorCode;
         }
 
         static async Task PostTodo()
@@ -132,6 +139,8 @@ namespace TodoListDaemonWithCert
                         DateTime.Now.ToString(),
                         ex.ToString(),
                         retry.ToString()));
+
+                    errorCode = -1;
                 }
 
             } while ((retry == true) && (retryCount < 3));
@@ -198,6 +207,8 @@ namespace TodoListDaemonWithCert
                         DateTime.Now.ToString(),
                         ex.ToString(),
                         retry.ToString()));
+
+                    errorCode = -1;
                 }
 
             } while ((retry == true) && (retryCount < 3));
