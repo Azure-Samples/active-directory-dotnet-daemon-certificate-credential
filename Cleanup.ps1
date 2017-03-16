@@ -11,7 +11,7 @@ This function removes the Azure AD applications for the sample. These applicatio
 #>
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory=$True, HelpMessage='Tenant ID (This is a GUID which represents the "Directory ID" of the AzureAD tenant into which you want to create the apps')]
+        [Parameter(HelpMessage='Tenant ID (This is a GUID which represents the "Directory ID" of the AzureAD tenant into which you want to create the apps')]
         [PSCredential] $Credential,
         [string] $tenantId
     )
@@ -29,7 +29,7 @@ This function removes the Azure AD applications for the sample. These applicatio
     }
     else
     {
-        if (!$TenantId)
+        if (!$tenantId)
         {
             $creds = Connect-AzureAD -Credential $Credential
         }
@@ -49,14 +49,14 @@ This function removes the Azure AD applications for the sample. These applicatio
     . .\Parameters.ps1
 
     # Removes the applications
-    Write-Host "Removing Application '$serviceAppIdURI'"
+    Write-Host "Removing Application '$serviceAppIdURI' if needed"
     $app=Get-AzureADApplication -Filter "identifierUris/any(uri:uri eq '$serviceAppIdURI')"  
     if ($app)
     {
         Remove-AzureADApplication -ObjectId $app.ObjectId
     }
 
-      Write-Host "Removing Application '$daemonAppIdURI'"
+      Write-Host "Removing Application '$daemonAppIdURI' if needed"
     $app=Get-AzureADApplication -Filter "identifierUris/any(uri:uri eq '$daemonAppIdURI')"      
     if ($app)
     {
