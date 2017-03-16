@@ -39,7 +39,7 @@ There are two options:
 If you want to understand in more depth what needs to be done in the Azure portal, and how to change the code (Option 2), please have a look at [Manual-Configuration-Steps.md](./Manual-Configuration-Steps.md). Otherwise (Option 1), the steps to use the PowerShell are the following:
 
 #### Find your tenant ID
-I might be that the user you want to create Azure Active Directory applications with can do it in several active directories. In that case to disambiguate in which active directory to create the applications, you will need to provide its tenant ID. Here is how to get it:
+If you have access to multiple Azure Active Directory tenants, you must specify the ID of the tenant in which you wish to create the applications. Here's how to find you tenant ID:
  1. Sign in to the [Azure portal](https://portal.azure.com).
  2. On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
  3. Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
