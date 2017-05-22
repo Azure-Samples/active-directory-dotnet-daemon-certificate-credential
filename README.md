@@ -22,7 +22,7 @@ To run this sample, you will need:
  - Visual Studio 2013 or above (also tested with Visual Studio 2015 and Visual Studio 2017)
  - An Internet connection
  - An Azure Active Directory (Azure AD) tenant. For more information on how to get an Azure AD tenant, please see [How to get an Azure AD tenant](https://azure.microsoft.com/en-us/documentation/articles/active-directory-howto-tenant/)
- - (Optional) If you want automatically create the applications in AAD corresponding to the daemon and service, and update the configuration files in their respective Visual Studio projects, you can run a script which requires Azure AD PowerShell. For details on how to install it, please see [the Azure Active Directory V2 PowerShell Module](https://www.powershellgallery.com/packages/AzureAD/). 
+ - (Optional) If you want automatically create the applications in AAD corresponding to the daemon and service, and update the configuration files in their respective Visual Studio projects, you can run a script which requires Azure AD PowerShell. For details on how to install it, please see [the Azure Active Directory V2 PowerShell Module](https://www.powershellgallery.com/packages/AzureAD/).
  Alternatively, you also have the option of configuring the applications  manually through the Azure portal and by editing the code.
 
 ### Step 1:  Clone or download this repository
@@ -44,21 +44,22 @@ If you have access to multiple Azure Active Directory tenants, you must specify 
  1. Sign in to the [Azure portal](https://portal.azure.com).
  2. On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
  3. Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
- 4. Click on **Properties** and copy the value of the **Directory ID** property to the clipboard. This is your tenant ID. We'll need it in the next step. 
+ 4. Click on **Properties** and copy the value of the **Directory ID** property to the clipboard. This is your tenant ID. We'll need it in the next step.
 
 #### Run the PowerShell script
+ 1. Open the PowerShell command window and navigate to the root directory of the project.
+ 2. The default Execution Policy for scripts is usually Restricted. In order to run the PowerShell script you need to set the Execution Policy to Unrestricted. You can set this just for the current PowerShell process by running the command
 
- 1. In the Visual Studio Solution explorer, right click on the solution file (.lsn) and choose **Open Folder in File Explorer**. The windows file explorer opens at the location of the solution
- 2. In the file explorer right click on the `Configure.ps1` file and choose **Edit**, this starts PowerShell ISE and loads the PowerShell Script. You can read the comments at the beginning of the script (they provide full explanations), as well as the bottom of the script.
- 3. In PowerShell ISE, Press the green arrow **Run script** to start the script
- 4. At the prompt ("tenantId:") paste the tenant ID that you previously copied from the Azure portal
- 5. When requested, sign-in as a user who has permissions to create applications in the AAD tenant. 
-        
+ `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted`
+ 2. Now run the script.
+
+  `.\Configure.ps1 <tenant ID>`
+
+  Replace with the tenant ID that you previously copied from the Azure portal.
+ 4. When requested, sign-in with the username and password of a user who has permissions to create applications in the AAD tenant.
+
     The script executes and provisions the AAD applications (If you look at the AAD applications in the portal after that the script has run, you'll have two additional applications). The script also updates two configuration files in the Visual Studio solution (`TodoListDaemonWithCert\App.Config` and `TodoListService\Web.Config`)
-
- 6. If you intend to clean up the azure AD applications from the Azure AD tenant after running the sample see Step 5 below.
-
-Note that if you are familiar with PowerShell it's also possible to start a PowerShell command window, and run ``. .\Configure.ps1`` providing your credentials directly (and the tenant ID if there is ambiguity).
+ 5. If you intend to clean up the azure AD applications from the Azure AD tenant after running the sample see Step 5 below.
 
 ### Step 3:  Trust the IIS Express SSL certificate
 
@@ -114,9 +115,9 @@ The daemon will add items to its To Do list and then read them back.
 ### Step 5:  Clean up the applications in the Azure AD tenant
 When you are done with running and understanding the sample, if you want to remove your Applications from AD just run:
 
-``. .\Cleanup.ps1``
+`.\Cleanup.ps1 <tenant ID>`
 
-Again you will be asked for your tenant ID.
+Replace with the tenant ID that you previously copied from the Azure portal.
 If you do that you also probably want to undo the changes in the `App.config` and `Web.Config`
 
 
