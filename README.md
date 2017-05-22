@@ -51,14 +51,16 @@ If you have access to multiple Azure Active Directory tenants, you must specify 
  2. The default Execution Policy for scripts is usually Restricted. In order to run the PowerShell script you need to set the Execution Policy to Unrestricted. You can set this just for the current PowerShell process by running the command
 
  `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted`
- 2. Now run the script.
+ 
+ 3. Now run the script.
 
   `.\Configure.ps1 <tenant ID>`
 
-  Replace with the tenant ID that you previously copied from the Azure portal.
+  Replace `<tenantID>` with the tenant ID that you previously copied from the Azure portal.
+  
  4. When requested, sign-in with the username and password of a user who has permissions to create applications in the AAD tenant.
 
-    The script executes and provisions the AAD applications (If you look at the AAD applications in the portal after that the script has run, you'll have two additional applications). The script also updates two configuration files in the Visual Studio solution (`TodoListDaemonWithCert\App.Config` and `TodoListService\Web.Config`)
+> The script executes and provisions the AAD applications (If you look at the AAD applications in the portal after that the script has run, you'll have two additional applications). The script also updates two configuration files in the Visual Studio solution (`TodoListDaemonWithCert\App.Config` and `TodoListService\Web.Config`)
  5. If you intend to clean up the azure AD applications from the Azure AD tenant after running the sample see Step 5 below.
 
 ### Step 3:  Trust the IIS Express SSL certificate
