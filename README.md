@@ -1,7 +1,7 @@
 ---
 services: active-directory
 platforms: dotnet
-author: dstrockis,jmprieur
+author: jmprieur
 ---
 # Authenticating to Azure AD in daemon apps with certificates
 
