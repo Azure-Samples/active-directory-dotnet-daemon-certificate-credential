@@ -6,7 +6,7 @@ author: jmprieur
 # Authenticating to Azure AD in daemon apps with certificates
 
 ![](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/30/badge)
-![](https://githuborgrepohealth.azurewebsites.net/api/TestBadge?id=3)
+![](https://githuborgrepohealth.azurewebsites.net/api/TestBadge?id=4)
 
 In this sample a Windows console application (TodoListDaemonWithCert) calls a web API (TodoListService) using its app identity. This scenario is useful for situations where headless or unattended job or process needs to run as an application identity, instead of as a user's identity. The application uses the Active Directory Authentication Library (ADAL) to get a token from Azure AD using the OAuth 2.0 client credential flow, where the client credential is a certificate.
 
