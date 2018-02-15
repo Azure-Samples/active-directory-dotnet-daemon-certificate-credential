@@ -37,6 +37,8 @@ There are two options:
  - Option 1: you run the `Configure.ps1` PowerShell script which creates two applications in the Azure Active Directory, (one for the client and one for the service), and then updates the configuration files in the Visual Studio projects to point to those two newly created apps
  - Option 2: you do the same manually.
 
+Note that for Windows Server 2012, creating a certificate with PowerShell is slighly different: See issue [#37](https://github.com/Azure-Samples/active-directory-dotnet-daemon-certificate-credential/issues/37)
+
 If you want to understand in more depth what needs to be done in the Azure portal, and how to change the code (Option 2), please have a look at [Manual-Configuration-Steps.md](./Manual-Configuration-Steps.md). Otherwise (Option 1), the steps to use the PowerShell are the following:
 
 #### Find your tenant ID
