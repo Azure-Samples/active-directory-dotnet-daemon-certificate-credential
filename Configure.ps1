@@ -109,7 +109,7 @@ so that they are consistent with the Applications parameters
         $tenantId = $creds.Tenant.Id
     }
     $tenant = Get-AzureADTenantDetail
-    $tenantName =  $tenant.VerifiedDomains[0].Name
+    $tenantName =  ($tenant.VerifiedDomains | Where { $_._Default -eq $True }).Name
 
     . .\Parameters.ps1
 
