@@ -19,7 +19,7 @@ In this sample, a Windows console application (TodoListDaemonWithCert) calls a w
 
 This sample is similar to [Daemon-DotNet](https://github.com/Azure-Samples/active-directory-dotnet-daemon), except instead of the daemon using a password as a credential to authenticate with Azure AD, here it uses a certificate.
 
-![Overview](./ReadmeFiles/topology.png)
+![Overview](./ReadmeFiles/Topology.png)
 
 ### Scenario
 
