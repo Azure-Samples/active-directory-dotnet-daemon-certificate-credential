@@ -218,25 +218,26 @@ Also, if you increase the instance count of the web site, requests will be distr
 ## About the Code
 
 The code acquiring a token is entirely located in the `TodoListDaemonWithCert\Program.cs` file.
-The `AuthenticationContext` is created line 69
+The `AuthenticationContext` is created line 76
 
 ```CSharp
 authContext = new AuthenticationContext(authority);
 ```
 
-Then a `ClientAssertionCertificate` is instantiated line 97, from the `TodoListDaemon` application's Client ID and a certificate (`cert`) which was found from the certificate store (see lines 72-89).
+Then a `ClientAssertionCertificate` is instantiated line 87, from the `TodoListDaemon` application's Client ID and a certificate (`cert`) which was found from the certificate store (see lines 72-89).
 
 ```CSharp
 certCred = new ClientAssertionCertificate(clientId, cert);
 ```
 
-This instance of `ClientAssertionCertificate` is used in the `PostTodo()` and `GetTodo()` methods  as an argument to `AcquireTokenAsync` to get a token for the Web API (line 125 and 194)
+This instance of `ClientAssertionCertificate` is used in the `GetAccessToken()` method is as an argument to `AcquireTokenAsync` to get a token for the Web API (line 147)
+`GetAccessToken()` is itself called from `PostTodo()` and `GetTodo()` methods.
 
 ```CSharp
 result = await authContext.AcquireTokenAsync(todoListResourceId, certCred);
 ```
 
-This token is then used as a bearer token to call the Web API (line 159 and 227)
+This token is then used as a bearer token to call the Web API (line 186 and 216)
 
 ```CSharp
 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", result.AccessToken)
