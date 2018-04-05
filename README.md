@@ -47,6 +47,8 @@ You can clone this repository from Visual Studio. Alternatively, from your shell
 
 `git clone https://github.com/Azure-Samples/active-directory-dotnet-daemon-certificate-credential.git`
 
+### Step 2:  Register the sample with your Azure Active Directory tenant
+
 There are two projects in this sample. Each needs to be separately registered in your Azure AD tenant. To register these projects, you can:
 
 - either follow the steps in the paragraphs below ([Step 2](#step-2--register-the-sample-with-your-azure-active-directory-tenant) and [Step 3](#step-3--configure-the-sample-to-use-your-azure-ad-tenant))
