@@ -84,7 +84,7 @@ As a first step you'll need to:
 
 1. In the  **Azure Active Directory** pane, click on **App registrations** and choose **New application registration**.
 1. Enter a friendly name for the application, for example 'TodoListDaemon' and select 'Web app / API' as the *Application Type*.
-  > Even if this is a desktop application, this is a confidential client application hence the Application Type
+   > Even if this is a desktop application, this is a confidential client application hence the Application Type
 1. For the *Redirect URI*, enter `https://<your_tenant_name>/TodoListDaemon`, replacing `<your_tenant_name>` with the name of your Azure AD tenant.
 1. Click on **Create** to create the application.
 1. In the succeeding page, Find the *Application ID* value and copy it to the clipboard. You'll need it to configure the Visual Studio configuration file for this project.
@@ -136,8 +136,9 @@ The content of the generated "keyCredentials.txt" file has the following schema:
 
 ##### Associate the certificate credentials with the Azure AD Application
 
-To associate the certificate credential with the  TodoListDaemon app object in Azure AD, you'll need to edit the application manifest. In the Azure portal app registrations for the  click on **Manifest**. An editor opens enabling you to edit the manifest.
-You need to replace the value of the `keyCredentials` property (that is `[]` if you don't have any certificate credentials yet), with the content of the keyCredential.txt file
+To associate the certificate credential with the `TodoListDaemon` app object in Azure AD, you'll need to edit the application manifest.
+In the Azure portal app registration page for the `TodoListDaemon`, click on **Manifest**. An editor window opens enabling you to edit the manifest.
+You need to replace the value of the `keyCredentials` property (that is `[]` if you don't have any certificate credentials yet), with the content of the keyCredential.txt file.
 
 To do this replacement in the manifest, you have two options:
 
@@ -157,13 +158,13 @@ In the steps below, ClientID is the same as Application ID or AppId.
 
 Open the solution in Visual Studio to configure the projects
 
-### Configure the service project
+#### Configure the service project
 
 1. Open the `TodoListService\Web.Config` file
 1. Find the app key `ida:Tenant` and replace the existing value with your AAD tenant name.
 1. Find the app key `ida:Audience` and replace the existing value with the App ID URI you registered earlier for the TodoListService app. For instance use `https://<your_tenant_name>/TodoListService`, where `<your_tenant_name>` is the name of your Azure AD tenant.
 
-### Configure the client project
+#### Configure the client project
 
 1. Open the `TodoListDaemonWithCert\App.Config` file
 1. Find the app key `ida:Tenant` and replace the existing value with your AAD tenant name.
@@ -172,7 +173,7 @@ Open the solution in Visual Studio to configure the projects
 1. Find the app key `todo:TodoListResourceId` and replace the existing value with the App ID URI you registered earlier for the TodoListService app. For instance use `https://<your_tenant_name>/TodoListService`, where `<your_tenant_name>` is the name of your Azure AD tenant.
 1. Find the app key `todo:TodoListBaseAddress` and replace the existing value with the base address of the TodoListService project (by default `https://localhost:44321/`).
 
-#### Step 4:  Run the sample
+### Step 4: Run the sample
 
 Clean the solution, rebuild the solution, and run it.  You might want to go into the solution properties and set both projects as startup projects, with the service project starting first. To do this, you can for instance:
 
