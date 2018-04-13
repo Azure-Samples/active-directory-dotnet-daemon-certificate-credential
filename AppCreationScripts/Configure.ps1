@@ -131,10 +131,10 @@ Function ConfigureApplications
     $tenantName =  ($tenant.VerifiedDomains | Where { $_._Default -eq $True }).Name
 
    # Create the service AAD application
-   Write-Host "Creating the AAD appplication (TodoListService)"
-   $serviceAadApplication = New-AzureADApplication -DisplayName "TodoListService" `
+   Write-Host "Creating the AAD appplication (TodoListService-Daemon-Cert)"
+   $serviceAadApplication = New-AzureADApplication -DisplayName "TodoListService-Daemon-Cert" `
                                                    -HomePage "https://localhost:44321/" `
-                                                   -IdentifierUris "https://$tenantName/TodoListService" `
+                                                   -IdentifierUris "https://$tenantName/TodoListService-Daemon-Cert" `
                                                    -PublicClient $False
 
 
@@ -144,7 +144,7 @@ Function ConfigureApplications
 
    # URL of the AAD application in the Azure portal
    $servicePortalUrl = "https://portal.azure.com/#@"+$tenantName+"/blade/Microsoft_AAD_IAM/ApplicationBlade/appId/"+$serviceAadApplication.AppId+"/objectId/"+$serviceAadApplication.ObjectId
-   Add-Content -Value "<tr><td>service</td><td>$currentAppId</td><td><a href='$servicePortalUrl'>TodoListService</a></td></tr>" -Path createdApps.html
+   Add-Content -Value "<tr><td>service</td><td>$currentAppId</td><td><a href='$servicePortalUrl'>TodoListService-Daemon-Cert</a></td></tr>" -Path createdApps.html
 
    # Create the client AAD application
    Write-Host "Creating the AAD appplication (TodoListDaemon)"
@@ -153,7 +153,7 @@ Function ConfigureApplications
                                                   -PublicClient $False
 
    # Generate a certificate
-   Write-Host "Creating the client appplication (TodoListDaemon)"
+   Write-Host "Generating a cert for client appplication (TodoListDaemon)"
    $certificate=New-SelfSignedCertificate -Subject CN=TodoListDaemonWithCert `
                                            -CertStoreLocation "Cert:\CurrentUser\My" `
                                            -KeyExportPolicy Exportable `
@@ -183,7 +183,7 @@ Function ConfigureApplications
    $requiredResourcesAccess = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.RequiredResourceAccess]
    # Add Required Resources Access (from 'client' to 'service')
    Write-Host "Getting access from 'client' to 'service'"
-   $requiredPermissions = GetRequiredPermissions -applicationDisplayName "TodoListService" `
+   $requiredPermissions = GetRequiredPermissions -applicationDisplayName "TodoListService-Daemon-Cert" `
                                                  -requiredDelegatedPermissions "user_impersonation";
    $requiredResourcesAccess.Add($requiredPermissions)
    Set-AzureADApplication -ObjectId $clientAadApplication.ObjectId -RequiredResourceAccess $requiredResourcesAccess

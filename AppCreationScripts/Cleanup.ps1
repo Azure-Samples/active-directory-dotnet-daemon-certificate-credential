@@ -48,8 +48,8 @@ This function removes the Azure AD applications for the sample. These applicatio
     # Removes the applications
     Write-Host "Cleaning-up applications from tenant '$tenantName'"
 
-    Write-Host "Removing 'service' (TodoListService) if needed"
-    $app=Get-AzureADApplication -Filter "identifierUris/any(uri:uri eq 'https://$tenantName/TodoListService')"  
+    Write-Host "Removing 'service' (TodoListService-Daemon-Cert) if needed"
+    $app=Get-AzureADApplication -Filter "identifierUris/any(uri:uri eq 'https://$tenantName/TodoListService-Daemon-Cert')"  
     if ($app)
     {
         Remove-AzureADApplication -ObjectId $app.ObjectId

@@ -13,11 +13,15 @@ endpoint: AAD V1
 
 ## About this sample
 
+ The application uses the Active Directory Authentication Library (ADAL) to get a token from Azure AD using the [OAuth 2.0 client credential](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-protocols-oauth-client-creds) flow, where the client credential is a certificate.
+
 ### Overview
 
-In this sample, a Windows console application (TodoListDaemonWithCert) calls a web API (TodoListService) using its app identity. This scenario is useful for situations where headless or unattended job or process needs to run as an application identity, instead of as a user's identity. The application uses the Active Directory Authentication Library (ADAL) to get a token from Azure AD using the OAuth 2.0 client credential flow, where the client credential is a certificate.
+In this sample, a Windows console application (TodoListDaemonWithCert) calls a web API (TodoListService) using its app identity. This scenario is useful for situations where headless or unattended job or a windows service needs to run with an application identity, instead of a user's identity.
 
-This sample is similar to [Daemon-DotNet](https://github.com/Azure-Samples/active-directory-dotnet-daemon), except instead of the daemon using a password as a credential to authenticate with Azure AD, here it uses a certificate.
+This sample is similar to [Daemon-DotNet](https://github.com/Azure-Samples/active-directory-dotnet-daemon), except instead of the daemon using a password as a credential to authenticate with Azure AD, it uses a certificate instead.
+
+## Topology
 
 ![Overview](./ReadmeFiles/Topology.png)
 
@@ -26,9 +30,9 @@ This sample is similar to [Daemon-DotNet](https://github.com/Azure-Samples/activ
 Once the service started, when you start the `TodoListDaemon` desktop application, it repeatedly:
 
 - adds items to the todo list maintained by the service,
-- lists the existing items.
+- lists the existing todo list items.
 
-No user interaction is involved.
+No user interaction is involved in this sample.
 
 ![Overview](./ReadmeFiles/TodoListDaemon.png)
 
@@ -58,7 +62,7 @@ There are two projects in this sample. Each needs to be separately registered in
   - **automatically** create for you the Azure AD applications and related objects (passwords, permissions, dependencies)
   - modify the Visual Studio projects' configuration files.
 
-If you want to use this automation, read the instructions in [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md)
+If you want to use this automation, read the instructions in [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md). After successfully executing the script, we advice you go through the values of the various settings listed in [Step 3](#step-3--configure-the-sample-to-use-your-azure-ad-tenant)) that the script populated. Carefully study the changes made to the configuration files of the various projects in the solution. This will help you build a good understanding of how and where these settings come together to make this scenario work.   
 
 > For Windows Server 2012, creating a certificate with PowerShell is slightly different: See issue [#37](https://github.com/Azure-Samples/active-directory-dotnet-daemon-certificate-credential/issues/37)
 
@@ -196,14 +200,14 @@ This project has one WebApp / Web API projects. To deploy them to Azure Web Site
 - publish the Web App / Web APIs to the web site, and
 - update its client(s) to call the web site instead of IIS Express.
 
-### Create and Publish the `TodoListService` to an Azure Web Site
+### Create and publish the `TodoListService` to an Azure Web Site
 
 1. Sign in to the [Azure portal](https://portal.azure.com).
-2. Click New in the top left-hand corner, select Web + Mobile --> Web App, select the hosting plan and region, and give your web site a name, for example, `TodoListService-contoso.azurewebsites.net`.  Click Create Web Site.
-3. Once the web site is created, click on it to manage it.  For this set of steps, download the publish profile and save it.  Other deployment mechanisms, such as from source control, can also be used.
-4. Switch to Visual Studio and go to the TodoListService project.  Right click on the project in the Solution Explorer and select Publish.  Click Import, and import the publish profile that you downloaded.
+2. Click `Create a resource` in the top left-hand corner, select **Web + Mobile** --> **Web App**, select the hosting plan and region, and give your web site a name, for example, `TodoListService-contoso.azurewebsites.net`.  Click Create Web Site.
+3. Once the web site is created, click on it to manage it.  For this set of steps, download the publish profile by clicking **Get publish profile** and save it.  Other deployment mechanisms, such as from source control, can also be used.
+4. Switch to Visual Studio and go to the TodoListService project.  Right click on the project in the Solution Explorer and select `Publish`.  Click **Import Profile** on the bottom bar, and import the publish profile that you downloaded earlier.
 5. On the Connection tab, update the Destination URL so that it is https, for example [https://TodoListService-contoso.azurewebsites.net](https://TodoListService-contoso.azurewebsites.net). Click Next.
-6. On the Settings tab, make sure Enable Organizational Authentication is NOT selected.  Click Publish.
+6. On the Settings tab, make sure Enable Organizational Authentication is NOT selected.  Click **Save**. Click on **Publish** on the main screen.
 7. Visual Studio will publish the project and automatically open a browser to the URL of the project.  If you see the default web page of the project, the publication was successful.
 
 ### Update the Active Directory tenant application registration for `TodoListService`
@@ -221,7 +225,7 @@ This project has one WebApp / Web API projects. To deploy them to Azure Web Site
 3. Run the client! If you are trying multiple different client types (for example, .Net, Windows Store, Android, iOS) you can have them all call this one published web API.
 
 > NOTE: Remember, the To Do list is stored in memory in this TodoListService sample. Azure Web Sites will spin down your web site if it is inactive, and your To Do list will get emptied.
-Also, if you increase the instance count of the web site, requests will be distributed among the instances. To Do will, therefore, not be the same on each instance.
+Also, if you increase the instance count of the web site, requests will be distributed among the instances. ToDo list will, therefore, not be the same on each instance.
 
 ## About the Code
 
@@ -255,7 +259,7 @@ If you've looked at the code in this sample and are wondering how authorization 
 
 ## How to recreate this sample
 
-First, in Visual Studio 2013 (or above) create an empty solution to host the  projects.  Then, follow these steps to create each project.
+First, in Visual Studio 2017 (or above) create an empty solution to host the  projects.  Then, follow these steps to create each project.
 
 ### Creating the TodoListService Project
 
