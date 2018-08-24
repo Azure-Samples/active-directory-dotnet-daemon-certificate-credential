@@ -82,7 +82,7 @@ of the Azure Active Directory window respectively as *Name* and *Directory ID*
 
 1. In the  **Azure Active Directory** pane, click on **App registrations** and choose **New application registration**.
 1. Enter a friendly name for the application, for example 'TodoListService' and select 'Web app / API' as the *Application Type*.
-1. For the *sign-on URL*, enter the base URL for the sample. By default, this sample uses `https://localhost:44321/`.
+1. For the *Sign-on URL*, enter the base URL for the sample. By default, this sample uses `https://localhost:44321/`.
 1. Click **Create** to create the application.
 1. In the succeeding page, Find the *Application ID* value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
 1. Then click on **Settings**, and choose **Properties**.
@@ -92,8 +92,8 @@ of the Azure Active Directory window respectively as *Name* and *Directory ID*
 
 1. In the  **Azure Active Directory** pane, click on **App registrations** and choose **New application registration**.
 1. Enter a friendly name for the application, for example 'TodoListDaemon' and select 'Web app / API' as the *Application Type*.
-   > Even if this is a desktop application, this is a confidential client application hence the Application Type
-1. For the *sign-on URL*, enter `https://<your_tenant_name>/TodoListDaemon`, replacing `<your_tenant_name>` with the name of your Azure AD tenant.
+   > Even if this is a desktop application, this is a confidential client application hence the *Application Type* being 'Web app / API', which is counter intuitive
+1. For the *Sign-on URL*, enter `https://<your_tenant_name>/TodoListDaemon`, replacing `<your_tenant_name>` with the name of your Azure AD tenant.
 1. Click **Create** to create the application.
 1. In the succeeding page, Find the *Application ID* value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
 1. Then click on **Settings**, and choose **Properties**.
@@ -159,6 +159,9 @@ Note that the `keyCredentials` property is multi-valued, so you may upload multi
 
 1. Configure Permissions for your application. To that extent, in the Settings menu, choose the 'Required permissions' section and then,
    click on **Add**, then **Select an API**, and type `TodoListService` in the textbox. Then, click on  **Select Permissions** and select **Access 'TodoListService'**.
+1. At this stage permissions are assigned correctly but client app is a daemon service so it cannot accept the consent via UI to use the service app. 
+   To avoid this situation, please click on "Grant permissions" which will accept the consent for the app at the tenant admin level.
+   You need to be an Azure AD tenant admin to do this.
 
 ### Step 3:  Configure the sample to use your Azure AD tenant
 
@@ -214,9 +217,9 @@ This project has one WebApp / Web API projects. To deploy them to Azure Web Site
 ### Update the Active Directory tenant application registration for `TodoListService`
 
 1. Navigate to the [Azure portal](https://portal.azure.com).
-2. On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant containing the `TodoListService` application.
-3. On the applications tab, select the `TodoListService` application.
-4. From the Settings -> Reply URLs menu, update the Sign-On URL, and Reply URL fields to the address of your service, for example [https://TodoListService-contoso.azurewebsites.net](https://TodoListService-contoso.azurewebsites.net). Save the configuration.
+1. On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant containing the `TodoListService` application.
+1. On the applications tab, select the `TodoListService` application.
+1. From the Settings -> Reply URLs menu, update the Sign-On URL, and Reply URL fields to the address of your service, for example [https://TodoListService-contoso.azurewebsites.net](https://TodoListService-contoso.azurewebsites.net). Save the configuration.
 
 ### Update the `TodoListDaemon` to call the `TodoListService` Running in Azure Web Sites
 
