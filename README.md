@@ -109,7 +109,7 @@ Open PowerShell and run New-SelfSignedCertificate with the following parameters 
 $cert=New-SelfSignedCertificate -Subject "CN=TodoListDaemonWithCert" -CertStoreLocation "Cert:\CurrentUser\My"  -KeyExportPolicy Exportable -KeySpec Signature
 ```
 
-> It has been reported that certificates created this way may work in Azure Active Directory after few hours.
+> It has been reported that certificates created this way may work in Azure Active Directory after few hours delay.
 
 If needed, you can later export this certificate using the "Manage User Certificate" MMC snap-in accessible from the Windows Control Panel. You can also add other options to generate the certificate in a different
 store such as the Computer or service store (See [How to: View Certificates with the MMC Snap-in](https://docs.microsoft.com/en-us/dotnet/framework/wcf/feature-details/how-to-view-certificates-with-the-mmc-snap-in)).
