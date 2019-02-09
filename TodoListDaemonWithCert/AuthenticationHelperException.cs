@@ -22,44 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-// The following using statements were added for this sample.
 using System;
-using System.Threading;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace TodoListDaemonWithCert
 {
-    class Program
+    public class AuthenticationHelperException : Exception
     {
-        static int Main(string[] args)
+        public AuthenticationHelperException(int errorCode) : 
+            base(errorCode.ToString())
         {
-            try
-            {
-                AuthenticationHelper authenticationHelper = new AuthenticationHelper();
-                CallApiHelper callApiHelper = new CallApiHelper(authenticationHelper);
-
-                // Call the ToDoList service 10 times with short delay between calls.
-                int delay = 1000;
-                for (int i = 0; i < 10; i++)
-                {
-                    callApiHelper.PostNewTodoItem().Wait();
-                    Thread.Sleep(delay);
-                    callApiHelper.DisplayTodoList().Wait();
-                    Thread.Sleep(delay);
-                }
-
-                Console.WriteLine("Press any key to continue");
-                Console.ReadKey();
-            }
-            catch(AuthenticationHelperException authenticationHelperException)
-            {
-                return authenticationHelperException.ErrorCode;
-            }
-            catch
-            {
-                return -2;
-            }
-
-            return 0;
+            ErrorCode = errorCode;
         }
+
+        public int ErrorCode { get;  }
     }
 }
