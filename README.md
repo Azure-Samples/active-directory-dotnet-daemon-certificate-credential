@@ -15,6 +15,12 @@ endpoint: AAD V1
 
  The application uses the Active Directory Authentication Library (ADAL) to get a token from Azure AD using the [OAuth 2.0 client credential](https://docs.microsoft.com/azure/active-directory/develop/active-directory-protocols-oauth-service-to-service) flow, where the client credential is a certificate.
 
+> There's a newer version of this sample! Check it out: https://github.com/azure-samples/ms-identity-dotnetcore-daemon-console
+>
+> This newer sample takes advantage of the Microsoft identity platform(formerly Azure AD v2.0).
+>
+> While still in public preview, every component is supported in production environments
+
 ### Overview
 
 In this sample, a Windows console application (TodoListDaemonWithCert) calls a web API (TodoListService) using its app identity. This scenario is useful for situations where headless or unattended job or a windows service needs to run with an application identity, instead of a user's identity.
