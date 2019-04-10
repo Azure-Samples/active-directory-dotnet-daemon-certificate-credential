@@ -68,7 +68,7 @@ There are two projects in this sample. Each needs to be separately registered in
   - **automatically** create for you the Azure AD applications and related objects (passwords, permissions, dependencies)
   - modify the Visual Studio projects' configuration files.
 
-If you want to use this automation, read the instructions in [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md). After successfully executing the script, we advice you go through the values of the various settings listed in [Step 3](#step-3--configure-the-sample-to-use-your-azure-ad-tenant)) that the script populated. Carefully study the changes made to the configuration files of the various projects in the solution. This will help you build a good understanding of how and where these settings come together to make this scenario work.   
+If you want to use this automation, read the instructions in [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md). After successfully executing the script, we advise you go through the values of the various settings listed in [Step 3](#step-3--configure-the-sample-to-use-your-azure-ad-tenant)) that the script populated. Carefully study the changes made to the configuration files of the various projects in the solution. This will help you build a good understanding of how and where these settings come together to make this scenario work.   
 
 > For Windows Server 2012, creating a certificate with PowerShell is slightly different: See issue [#37](https://github.com/Azure-Samples/active-directory-dotnet-daemon-certificate-credential/issues/37)
 
