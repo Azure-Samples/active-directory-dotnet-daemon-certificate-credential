@@ -16,7 +16,9 @@
       "Name": "TodoListService-Cert",
       "IsPublicClient": false,
       "Kind":"WebApi",
-      "AvailableToOtherTenants": false,
+      "IsAvailableToOtherTenants":false,
+      "Audience": "AzureADMyOrg",
+      "signInAudience": "AzureADMyOrg",
       "HomePage": "https://localhost:44321/"
     },
     {
@@ -25,8 +27,10 @@
       "Certificate": "CN=TodoListDaemonWithCert",
       "IsPublicClient": false,
       "Kind":"Daemon",
-      "AvailableToOtherTenants": false,      
+      "IsAvailableToOtherTenants":false,
+      "Audience": "AzureADMyOrg",
       "UsesROPCOrIWA": false,
+      "signInAudience": "AzureADMyOrg",
       "RequiredResourcesAccess": [
         {
           "Resource": "service",

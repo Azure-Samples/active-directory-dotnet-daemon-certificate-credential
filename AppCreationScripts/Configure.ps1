@@ -137,7 +137,6 @@ Function ConfigureApplications
    Write-Host "Creating the AAD application (TodoListService-Cert)"
    $serviceAadApplication = New-AzureADApplication -DisplayName "TodoListService-Cert" `
                                                    -HomePage "https://localhost:44321/" `
-                                                   -AvailableToOtherTenants $True `
                                                    -PublicClient $False
    $serviceIdentifierUri = 'api://'+$serviceAadApplication.AppId
    Set-AzureADApplication -ObjectId $serviceAadApplication.ObjectId -IdentifierUris $serviceIdentifierUri
@@ -164,7 +163,6 @@ Function ConfigureApplications
    Write-Host "Creating the AAD application (TodoListDaemon-Cert)"
    $clientAadApplication = New-AzureADApplication -DisplayName "TodoListDaemon-Cert" `
                                                   -IdentifierUris "https://$tenantName/TodoListDaemon-Cert" `
-                                                  -AvailableToOtherTenants $True `
                                                   -PublicClient $False
 
    # Generate a certificate

@@ -98,7 +98,7 @@ As a first step you'll need to:
 1. Select **New registration**.
 1. When the **Register an application page** appears, enter your application's registration information:
    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `TodoListService-Cert`.
-   - Change **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)**.
+   - Leave **Supported account types** on the default setting of **Accounts in this organizational directory only**.
 1. Select **Register** to create the application.
 1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
 
@@ -121,7 +121,7 @@ As a first step you'll need to:
 1. Select **New registration**.
 1. When the **Register an application page** appears, enter your application's registration information:
    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `TodoListDaemon-Cert`.
-   - Change **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)**.
+   - Leave **Supported account types** on the default setting of **Accounts in this organizational directory only**.
    - In the Redirect URI (optional) section, select **Web** in the combo-box.
       > Even if this is a desktop application, this is a confidential client application hence the *Application Type* being 'Web', which might seem counter intuitive.
    - For the Redirect URI*, enter `https://<your_tenant_name>/TodoListDaemon-Cert`, replacing `<your_tenant_name>` with the name of your Azure AD tenant.
