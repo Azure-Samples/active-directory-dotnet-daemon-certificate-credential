@@ -3,7 +3,8 @@
     "Title": "A .NET 4.5 daemon application that uses a certificate to authenticate with Azure AD and get OAuth 2.0 access tokens",
     "Level": 200,
     "Client": "Desktop",
-    "Service": "ASP.NET Web API"
+    "Service": "ASP.NET Web API",
+    "RepositoryUrl": "active-directory-dotnet-daemon-certificate-credential"
   },
 
   /*
@@ -12,15 +13,20 @@
   "AADApps": [
     {
       "Id": "service",
-      "Name": "TodoListService",
+      "Name": "TodoListService-Cert",
       "IsPublicClient": false,
+      "Kind":"WebApi",
+      "AvailableToOtherTenants": false,
       "HomePage": "https://localhost:44321/"
     },
     {
       "Id": "client",
-      "Name": "TodoListDaemon",
+      "Name": "TodoListDaemon-Cert",
       "Certificate": "CN=TodoListDaemonWithCert",
       "IsPublicClient": false,
+      "Kind":"Daemon",
+      "AvailableToOtherTenants": false,      
+      "UsesROPCOrIWA": false,
       "RequiredResourcesAccess": [
         {
           "Resource": "service",
@@ -48,7 +54,7 @@
         },
         {
           "key": "ida:Audience",
-          "value": "service.IdentifierUris"
+          "value": "$serviceIdentifierUri"
         }
       ]
     },
@@ -72,7 +78,7 @@
         },
         {
           "key": "todo:TodoListResourceId",
-          "value": "service.IdentifierUris"
+          "value": "$serviceIdentifierUri"
         },
         {
           "key": "todo:TodoListBaseAddress",
