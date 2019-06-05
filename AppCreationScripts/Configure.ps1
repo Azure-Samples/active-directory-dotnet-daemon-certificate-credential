@@ -256,10 +256,10 @@ Function ConfigureApplications
    Write-Host ""
    Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------"
    Write-Host -ForegroundColor Yellow "IMPORTANT: Please follow the instructions below to complete a few manual step(s) in the Azure portal":
-   Write-Host "- For 'todoListService_web_daemon_v1'"
+   Write-Host "- For 'TodoListService-Cert'"
    Write-Host "  - Navigate to Properties tab: '$servicePropertyBladeUrl'"
    Write-Host "  - Set 'User assignment required' to 'Yes'"
-   Write-Host "- For 'todoList_web_daemon_v1'"
+   Write-Host "- For 'TodoListService-Cert'"
    Write-Host "  - Navigate to API Permisions: '$clientPortalUrl'"
    Write-Host "  - Click on 'Grant admin consent for (your tenant)'."
    Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------"
