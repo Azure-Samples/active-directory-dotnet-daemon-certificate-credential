@@ -5,6 +5,9 @@ param(
     [string] $tenantId
 )
 
+if ((Get-Module -ListAvailable -Name "AzureAD") -eq $null) { 
+    Install-Module "AzureAD" -Scope CurrentUser 
+} 
 Import-Module AzureAD
 $ErrorActionPreference = 'Stop'
 
@@ -46,22 +49,24 @@ This function removes the Azure AD applications for the sample. These applicatio
     # Removes the applications
     Write-Host "Cleaning-up applications from tenant '$tenantName'"
 
-    Write-Host "Removing 'service' (TodoListService) if needed"
-    $app=Get-AzureADApplication -Filter "identifierUris/any(uri:uri eq 'https://$tenantName/TodoListService')"  
+    Write-Host "Removing 'service' (TodoListService-Cert) if needed"
+    $app=Get-AzureADApplication -Filter "DisplayName eq 'TodoListService-Cert'"  
+
     if ($app)
     {
         Remove-AzureADApplication -ObjectId $app.ObjectId
-        Write-Host "Removed."
+        Write-Host "Removed TodoListService-Cert."
     }
+        Write-Host "Removing 'client' (TodoListDaemon-Cert) if needed"
+    $app=Get-AzureADApplication -Filter "DisplayName eq 'TodoListDaemon-Cert'"  
 
-    Write-Host "Removing 'client' (TodoListDaemon) if needed"
-    $app=Get-AzureADApplication -Filter "identifierUris/any(uri:uri eq 'https://$tenantName/TodoListDaemon')"  
     if ($app)
     {
         Remove-AzureADApplication -ObjectId $app.ObjectId
-        Write-Host "Removed."
+        Write-Host "Removed TodoListDaemon-Cert."
     }
-
+         # remove self-signed certificate
+     Get-ChildItem -Path Cert:\CurrentUser\My | where { $_.subject -eq "CN=TodoListDaemonWithCert" } | Remove-Item
 }
 
 Cleanup -Credential $Credential -tenantId $TenantId
