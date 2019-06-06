@@ -49,7 +49,7 @@ To run this sample, you'll need:
 - [Visual Studio 2017](https://aka.ms/vsdownload)
 - An Internet connection
 - An Azure Active Directory (Azure AD) tenant. For more information on how to get an Azure AD tenant, see [How to get an Azure AD tenant](https://azure.microsoft.com/en-us/documentation/articles/active-directory-howto-tenant/)
-- A user account in your Azure AD tenant. This sample will not work with a Microsoft account (formerly Windows Live account). Therefore, if you signed in to the [Azure portal](https://portal.azure.com) with a Microsoft account and have never created a user account in your directory before, you need to do that now.
+- A user account that is an **admin of your Azure AD tenant**. This sample will not work with a Microsoft account (formerly Windows Live account). Therefore, if you signed in to the [Azure portal](https://portal.azure.com) with a Microsoft account and have never created a user account in your directory before, you need to do that now.
 
 ### Step 1:  Clone or download this repository
 
@@ -59,7 +59,7 @@ You can clone this repository from Visual Studio. Alternatively, from your shell
 git clone https://github.com/Azure-Samples/active-directory-dotnet-daemon-certificate-credential.git
 ```
 
-> Given that the name of the sample is pretty long, and so are the name of the referenced NuGet pacakges, you might want to clone it in a folder close to the root of your hard drive, to avoid file size limitations on Windows.
+> Given that the name of the sample is pretty long, and so are the name of the referenced NuGet packages, you might want to clone it in a folder close to the root of your hard drive, to avoid file size limitations on Windows.
 
 ### Step 2:  Register the sample with your Azure Active Directory tenant
 
@@ -76,7 +76,7 @@ If you want to use this automation:
    ```PowerShell
    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process -Force
    ```
-1. Run the script to create your Azure AD application and configure the code of the sample application accordinly. 
+1. Run the script to create your Azure AD application and configure the code of the sample application accordingly. 
    ```PowerShell
    .\AppCreationScripts\Configure.ps1
    ```
@@ -106,14 +106,62 @@ As a first step you'll need to:
    - Select **Add a scope**
    - accept the proposed Application ID URI (api://{clientId}) by selecting **Save and Continue**
    - Enter the following parameters
-     - for **Scope name** use `access_as_user`
+     - for **Scope name** use `access_as_application`
      - Keep **Admins and users** for **Who can consent**
-     - in **Admin consent display name** type `Access TodoListService-Cert as a user`
-     - in **Admin consent description** type `Accesses the TodoListService-Cert Web API as a user`
-     - in **User consent display name** type `Access TodoListService-Cert as a user`
-     - in **User consent description** type `Accesses the TodoListService-Cert Web API as a user`
+     - in **Admin consent display name** type `Access TodoListService-Cert as an application`
+     - in **Admin consent description** type `Accesses the TodoListService-Cert Web API an application`
+     - in **User consent display name** type `Access TodoListService-Cert as an application`
+     - in **User consent description** type `Accesses the TodoListService-Cert Web API as an application`
      - Keep **State** as **Enabled**
      - Select **Add scope**
+
+#### Secure your Web API by defining Application Roles (permission)
+
+If you don't do anything more, Azure AD will provide a token for any daemon application (using the client credential flow) requesting an access token for your Web API (for its App ID URI)
+
+In this step we are going to ensure that Azure AD only provides a token to the applications to which the Tenant admin grants consent. We are going to limit the access to our TodoList client by defining authorizations
+
+##### Add an app role to the manifest
+
+1. While still in the blade for your  application, click **Manifest**.
+1. Edit the manifest by locating the `appRoles` setting and adding an application roles. The role definition is provided in the JSON block below.  Leave the `allowedMemberTypes` to "Application" only.
+1. Save the manifest.
+
+The content of `appRoles` should be the following (the `id` can be any unique GUID)
+
+```JSon
+"appRoles": [
+	{
+	"allowedMemberTypes": [ "Application" ],
+	"description": "Accesses the TodoListService-Cert as an application.",
+	"displayName": "access_as_application",
+	"id": "ccf784a6-fd0c-45f2-9c08-2f9d162a0628",
+	"isEnabled": true,
+	"lang": null,
+	"origin": "Application",
+	"value": "access_as_application"
+	}
+],
+```
+
+##### Ensure that tokens Azure AD issues tokens for your Web API only to allowed clients
+
+The Web API tests for the app role (that's the developer way of doing it). But you can even ask Azure Active Directory to issue a token for your Web API only to applications which were approved by the tenant admin. For this:
+
+1. On the app **Overview** page for your app registration, select the hyperlink with the name of your application in **Managed application in local directory** (note this field title can be truncated for instance Managed application in ...)
+
+   > When you select this link you will navigate to the **Enterprise Application Overview** page associated with the service principal for your application in the tenant where you created it. You can navigate back to the app registration page by using the back button of your browser.
+
+1. Select the **Properties** page in the **Manage** section of the Enterprise application pages
+1. If you want AAD to enforce access to your Web API from only certain clients, set **User assignment required?** to **Yes**.
+
+   > **Important security tip**
+   >
+   > By setting **User assignment required?** to **Yes**, AAD will check the app role assignments of the clients when they request an access token for the Web API (see app permissions below). If the client was not be assigned to any AppRoles, AAD would just return `invalid_client: AADSTS501051: Application xxxx is not assigned to a role for the xxxx`
+   >
+   > If you keep **User assignment required?** to **No**, <span style='background-color:yellow; display:inline'>Azure AD  won’t check the app role assignments  when a client requests an access token to your Web API</span>. Therefore, any daemon client (that is any client using client credentials flow) would still be able to obtain the access token for the  Web API just by specifying its audience. Any application, would be able to access the API without having to request permissions for it. Now this is not then end of it, as your Web API can always, as is done in this sample, verify that the application has the right role (which was authorized by the tenant admin), by validating that the access token has a roles claim, and 
+
+1. Select **Save**
 
 #### Register the client app (TodoListDaemon-Cert)
 
@@ -275,8 +323,10 @@ Also, if you increase the instance count of the web site, requests will be distr
 
 ## About the Code
 
+### Client side: the daemon app
+
 The code acquiring a token is entirely located in the `TodoListDaemonWithCert\Program.cs` file.
-The `AuthenticationContext` is created line 76
+The `AuthenticationContext` is created (line 76)
 
 ```CSharp
 authContext = new AuthenticationContext(authority);
@@ -301,7 +351,47 @@ This token is then used as a bearer token to call the Web API (line 186 and 216)
 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", result.AccessToken)
 ```
 
-If you've looked at the code in this sample and are wondering how authorization works, you're not alone.  See [this Stack Overflow question](https://stackoverflow.com/questions/34415348/azure-active-directory-daemon-client-using-certificates/).  The TodoList Service in this solution simply validates that the client was able to authenticate against the tenant that the service is configured to work with.  Effectively, any application in that tenant will be able to use the service.
+### Service side: how we protected the API
+
+On the service side, the code directing ASP.NET to validate the access token is in `App_Start\Startup.Auth.cs`. It only validates the audience of the application (the App ID URI)
+
+```CSharp
+ public partial class Startup
+ {
+  // For more information on configuring authentication, please visit http://go.microsoft.com/fwlink/?LinkId=301864
+  public void ConfigureAuth(IAppBuilder app)
+  {
+   app.UseWindowsAzureActiveDirectoryBearerAuthentication(
+      new WindowsAzureActiveDirectoryBearerAuthenticationOptions
+      {
+       Tenant = ConfigurationManager.AppSettings["ida:Tenant"],
+       TokenValidationParameters = new TokenValidationParameters
+       {
+        ValidAudience = ConfigurationManager.AppSettings["ida:Audience"]
+       }
+      });
+   }
+}
+```
+
+However, the controllers also validate that the client has a `roles` claim of value `access_as_application`. It returns an Unauthorized error otherwise.
+
+```CSharp
+ public IEnumerable<TodoItem> Get()
+ {
+  //
+  // The roles claim tells what permissions the client application has in the service.
+  // In this case we look for a roles value of access_as_application
+  //
+  Claim scopeClaim = ClaimsPrincipal.Current.FindFirst("roles");
+  if (scopeClaim == null || (scopeClaim.Value != "access_as_application"))
+  {
+   throw new HttpResponseException(new HttpResponseMessage { StatusCode = HttpStatusCode.Unauthorized,
+      ReasonPhrase = "The 'roles' claim does not contain 'access_as_application'or was not found" });
+  }
+  ...
+ }
+```
 
 ## How to recreate this sample
 
@@ -346,8 +436,11 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 For more information, see ADAL.NET's conceptual documentation:
 
+- [ADAL.NET's conceptual documentation](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet/wiki)
+- [Recommended pattern to acquire a token](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet/wiki/AcquireTokenSilentAsync-using-a-cached-token#recommended-pattern-to-acquire-a-token)
 - [Client credential flows](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet/wiki/Client-credential-flows)
 - [Using the acquired token to call a protected Web API](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet/wiki/Using-the-acquired-token-to-call-a-protected-Web-API)
+- [How to: Add app roles in your application and receive them in the token](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps)
 
 For more information about how OAuth 2.0 protocols work in this scenario and other scenarios, see [Authentication Scenarios for Azure AD](http://go.microsoft.com/fwlink/?LinkId=394414).
 

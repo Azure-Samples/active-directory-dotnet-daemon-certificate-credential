@@ -20,6 +20,19 @@ param(
 # Adds the requiredAccesses (expressed as a pipe separated string) to the requiredAccess structure
 # The exposed permissions are in the $exposedPermissions collection, and the type of permission (Scope | Role) is 
 # described in $permissionType
+
+Function CreateAppRole([string] $Name, [string] $Description)
+{
+    $appRole = New-Object Microsoft.Open.AzureAD.Model.AppRole
+    $appRole.AllowedMemberTypes = New-Object System.Collections.Generic.List[string]
+    $appRole.AllowedMemberTypes.Add("Application");
+    $appRole.DisplayName = $Name
+    $appRole.Id = New-Guid
+    $appRole.IsEnabled = $true
+    $appRole.Description = $Description
+    $appRole.Value = $Name;
+    return $appRole
+}
 Function AddResourcePermission($requiredAccess, `
                                $exposedPermissions, [string]$requiredAccesses, [string]$permissionType)
 {
@@ -133,11 +146,19 @@ Function ConfigureApplications
     # Get the user running the script
     $user = Get-AzureADUser -ObjectId $creds.Account.Id
 
+    $accessasadminrole = CreateAppRole -Name "access_as_application" -Description  "Accesses the TodoListService-Cert as an application."
+
+    $appRoles = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.AppRole]
+    $appRoles.Add($accessasadminrole)
+
    # Create the service AAD application
    Write-Host "Creating the AAD application (TodoListService-Cert)"
    $serviceAadApplication = New-AzureADApplication -DisplayName "TodoListService-Cert" `
                                                    -HomePage "https://localhost:44321/" `
-                                                   -PublicClient $False
+                                                   -PublicClient $False `
+                                                   -AvailableToOtherTenants $False `
+                                                   -AppRoles $appRoles 
+
    $serviceIdentifierUri = 'api://'+$serviceAadApplication.AppId
    Set-AzureADApplication -ObjectId $serviceAadApplication.ObjectId -IdentifierUris $serviceIdentifierUri
 
@@ -207,7 +228,7 @@ Function ConfigureApplications
    # Add Required Resources Access (from 'client' to 'service')
    Write-Host "Getting access from 'client' to 'service'"
    $requiredPermissions = GetRequiredPermissions -applicationDisplayName "TodoListService-Cert" `
-                                                -requiredDelegatedPermissions "user_impersonation" `
+                                                -requiredApplicationPermissions "access_as_application" `
 
    $requiredResourcesAccess.Add($requiredPermissions)
 
@@ -229,6 +250,19 @@ Function ConfigureApplications
    ReplaceSetting -configFilePath $configFile -key "ida:CertName" -newValue "CN=TodoListDaemonWithCert"
    ReplaceSetting -configFilePath $configFile -key "todo:TodoListResourceId" -newValue $serviceIdentifierUri
    ReplaceSetting -configFilePath $configFile -key "todo:TodoListBaseAddress" -newValue $serviceAadApplication.HomePage
+
+   $servicePropertyBladeUrl = "https://portal.azure.com/#blade/Microsoft_AAD_IAM/ManagedAppMenuBlade/Properties/objectId/"+$serviceServicePrincipal.ObjectId+"/appId/"+$serviceAadApplication.AppId
+
+   Write-Host ""
+   Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------"
+   Write-Host -ForegroundColor Yellow "IMPORTANT: Please follow the instructions below to complete a few manual step(s) in the Azure portal":
+   Write-Host "- For 'TodoListService-Cert'"
+   Write-Host "  - Navigate to Properties tab: '$servicePropertyBladeUrl'"
+   Write-Host "  - Set 'User assignment required' to 'Yes'"
+   Write-Host "- For 'TodoListService-Cert'"
+   Write-Host "  - Navigate to API Permisions: '$clientPortalUrl'"
+   Write-Host "  - Click on 'Grant admin consent for (your tenant)'."
+   Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------"
 
    Add-Content -Value "</tbody></table></body></html>" -Path createdApps.html  
 }
