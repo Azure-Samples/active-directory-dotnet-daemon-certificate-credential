@@ -45,6 +45,8 @@ namespace TodoListService.Controllers
         // GET api/todolist
         public IEnumerable<TodoItem> Get()
         {
+            ValidateAppRole();
+
             // A user's To Do list is keyed off of the NameIdentifier claim, which contains an immutable, unique identifier for the user.
             Claim subject = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier);
 
@@ -56,9 +58,24 @@ namespace TodoListService.Controllers
         // POST api/todolist
         public void Post(TodoItem todo)
         {
+            ValidateAppRole();
+
             if (todo != null && !string.IsNullOrWhiteSpace(todo.Title))
             {
                 todoBag.Add(new TodoItem { Title = todo.Title, Owner = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value });
+            }
+        }
+
+        private void ValidateAppRole()
+        {
+            //
+            // The `role` claim tells you what permissions the client application has in the service.
+            // In this case we look for a `role` value of `access_as_application`
+            //
+            Claim scopeClaim = ClaimsPrincipal.Current.FindFirst("roles");
+            if (scopeClaim == null || (scopeClaim.Value != "access_as_application"))
+            {
+                throw new HttpResponseException(new HttpResponseMessage { StatusCode = HttpStatusCode.Unauthorized, ReasonPhrase = "The 'roles' claim does not contain 'access_as_application'or was not found" });
             }
         }
     }
