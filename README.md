@@ -4,4 +4,4 @@ There's a newer version of this sample taking advantage of the Microsoft identit
 
 Check it out: https://github.com/azure-samples/active-directory-dotnetcore-daemon-v2
 
-If you really need to access this Azure AD v1.0 | ADAL.NET sample, you can navigate to the [master](https://github.com/Azure-Samples/active-directory-dotnet-daemon-certificate-credential/master) branch, but please know that it's no longer supported.
+If you really need to access this Azure AD v1.0 | ADAL.NET sample, you can navigate to the [master](https://github.com/Azure-Samples/active-directory-dotnet-daemon-certificate-credential/tree/master) branch, but please know that it's no longer supported.
